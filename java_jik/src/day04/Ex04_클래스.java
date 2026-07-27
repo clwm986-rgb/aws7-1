@@ -101,9 +101,15 @@ public class Ex04_클래스 {
 		
 		//필드는 초기화가 되기 때문에 바로 사용할 수 있음
 		System.out.println("자동차 전원 : " + myCar.power);
+		myCar.trunOnAndOff();
+		System.out.println("자동차 전원 : " + myCar.power);
+		myCar.trunOnAndOff();
+		System.out.println("자동차 전원 : " + myCar.power);
 		int num;
 		//지역 변수는 초기화가 자동으로 안되기 때문에 초기화 하지 않고 사용할 수 없음
 		//System.out.println(num);
+		
+		Car myCar2 = new Car("현대", "검정", "금호타이어", "아반떼", "소형차");
 	}
 
 }
@@ -124,7 +130,38 @@ class Car{
 	char gear; //기어. P : 주차, D : 드라이브, N : 중립, R : 후진
 	
 	//메서드(기능)
+	/* 기능 : 자동차의 전원을 켜거나 끄는 기능
+	 * 매개변수 : 없음
+	 * 리턴타입 : 없음 => void
+	 * 메서드명 : turnOnAndOff
+	 * */
+	void trunOnAndOff() {
+		if(power) {
+			System.out.println("전원이 꺼졌습니다.");
+		}
+		else {
+			System.out.println("전원이 켜졌습니다.");
+		}
+		power = !power;
+	}
 	
-	//생성자(초기화)
+	//생성자(필드 초기화)
+	//기본 생성자
+	Car() {
+		wheelCount = 4;
+		wheelType = "한국타이어";
+		color = "검정";
+		company = "모름";
+		gear = 'P';
+	}
+	Car(String company1, String color1, String wheelType1, String name1, String type1){
+		wheelCount = 4;
+		wheelType = wheelType1;
+		color = color1;
+		company = company1;
+		gear = 'P';
+		name = name1;
+		type = type1;
+	}
 }
 
