@@ -31,6 +31,7 @@ public class Ex01_다형성 {
 		aircons[acCount] = ac2; //매장에 에어컨 추가
 		acCount++; //매장에 있는 에어컨 대수 1 증가
 		
+		//객체의 다형성
 		//다형성을 이용하면 한 종류를 이용하여 여러 종류의 클래스를 관리할 수 있다
 		Electronics [] electronics = new Electronics[20];
 		int eCount = 0;//전자제품수
@@ -44,10 +45,12 @@ public class Ex01_다형성 {
 		electronics[eCount] = tv1;
 		eCount++;
 		
+		check(ac1);
+		check(tv1);
 	}
 	
 	//Tv가 잘 켜지고 꺼지는지 테스트
-	public static void check(Tv tv) {
+	/*public static void check(Tv tv) {
 		tv.turnOn();
 		tv.turnOff();
 	}
@@ -55,6 +58,11 @@ public class Ex01_다형성 {
 	public static void check(AirConditioner ac) {
 		ac.turnOn();
 		ac.turnOff();
+	}*/
+	//매개변수의 다형성으로 위 2개의 메서드를 한개의 메서드로 대체
+	public static void check(Electronics et) {
+		et.turnOn();
+		et.turnOff();
 	}
 
 }
