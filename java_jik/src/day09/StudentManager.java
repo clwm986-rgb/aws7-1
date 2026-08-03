@@ -1,6 +1,7 @@
 package day09;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class StudentManager {
@@ -34,9 +35,26 @@ public class StudentManager {
 	}
 
 	public void printStudents() {
+		sort();
+		if(list.size() == 0) {
+			System.out.println("등록된 학생이 없습니다.");
+		}
 		for(Student std : list) {
 			System.out.println(std);
 		}
+	}
+	
+	private void sort() {
+		//출력전 학년, 반, 번호 순으로 정렬
+		list.sort(
+			//학년을 기준으로 정렬
+			Comparator.comparing(Student::getGrade)
+			//학년이 같으면 반을 기준으로 정렬 
+			.thenComparing(Student::getClassNum)
+			//반이 같으면 번호를 기준으로 정렬
+			.thenComparing(Student::getNum)
+			//내림차순은 .reverse()추가
+		);
 	}
 
 	public boolean updateScore(Student std, int kor, int eng, int math) {
@@ -52,7 +70,11 @@ public class StudentManager {
 		//index 번지에 있는 학생 성적을 수정
 		//list.get(index) => 수정할 학생 정보
 		list.get(index).updateScore(kor, eng, math);
-		return false;
+		return true;
+	}
+
+	public Object getList() {
+		return this.list;
 	}
 	
 	//기능들

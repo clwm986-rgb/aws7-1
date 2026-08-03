@@ -1,8 +1,10 @@
 package day09;
 
-import java.util.Objects;
+import java.io.Serializable;
 
-public class Student {
+public class Student implements Serializable {
+	
+	private static final long serialVersionUID = -3282667829994487101L;
 	
 	private int grade, classNum, num;
 	private String name;
@@ -34,6 +36,25 @@ public class Student {
 			return false;
 		Student other = (Student) obj;
 		return classNum == other.classNum && grade == other.grade && num == other.num;
+	}
+
+	public void updateScore(int kor, int eng, int math) {
+		this.kor = kor;
+		this.eng = eng;
+		this.math = math;
+		
+	}
+
+	public int getGrade() {
+		return grade;
+	}
+
+	public int getClassNum() {
+		return classNum;
+	}
+
+	public int getNum() {
+		return num;
 	}
 	
 	

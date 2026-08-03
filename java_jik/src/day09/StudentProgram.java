@@ -146,7 +146,7 @@ public class StudentProgram implements ConsolePromgram {
 		}while(menu != EXIT);
 		
 		//저장하기
-		save(fileName, list);
+		save(fileName, manager.getList());
 	}
 	
 	private void printBar() {
