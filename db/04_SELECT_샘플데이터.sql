@@ -64,3 +64,7 @@ values(3, 1, 50), (3, 2, 100);
 # 2학년 1반 1번 학생의 2학년 1학기 성적 - 국어 : 100, 수학 : 50
 insert into score(st_code, sj_code, score)
 values(4, 5, 100), (4, 6, 100);
+
+# 3학년 1반 1번 둘리를 추가 
+insert into student(grade, class, num, name)
+values(3,1,1,'둘리');

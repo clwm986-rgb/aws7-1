@@ -47,4 +47,22 @@ update product set amount = amount - 1 where code = 'ACC002';
 delete from cart where id = 'abc123' and code = 'ACC001';
 delete from cart where id = 'abc123' and code = 'ACC002';
 
+# abc123회원이 ACC001, ACC002 제품을 장바구니에 담음 
+insert into cart(id, code, amount) value('abc123', 'ACC001', 2);
+insert into cart(id, code, amount) value('abc123', 'ACC002', 1);
+
+# 다음 회원을 추가 
+# 아이디 : asdasd, 비번 : asdasd, 이메일 : asdasd@naver.com 
+# 번호 : 011-9999-9999
+insert into user(id, pw, email, phone)
+values('asdasd', 'asdasd', 'asdasd@naver.com', '011-9999-9999' );
+
+# asdasd회원이 ACC001 제품 2개를 구매 
+insert into buy(code, amount, id) values('ACC001', 2, 'asdasd');
+
+# 제품 수량 변경
+update product set amount = amount - 2 where code = 'ACC001';
+
+
+
 
