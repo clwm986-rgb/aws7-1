@@ -149,3 +149,48 @@ FROM
         JOIN
     student ON student.code = st_code
 GROUP BY st_code;
+
+# 2. outer join
+# - 기준 테이블을 기준으로 합침 
+	# 기준 테이블 옆에 다른 테이블을 가져와서 값이 있는 애들은 붙이고 없으면 null을 채움 
+# - 제품별 판매액을 조회할 때 사용
+	# 판매 안된 제품은 0원으로 조회할 때 사용 
+# - left join/right join 
+	# 테이블A left join 테이블B => 테이블A를 기준으로 테이블B를 연결
+    # 테이블A right join 테이블B => 테이블B를 기준으로 테이블A를 연결 
+    
+# 모든 제품의 판매 기록을 조회 : outer join
+# 판매된 제품들만 판매 기록을 조회 : inner join
+use sample2;
+# 모든 학생의 학생별 들은 과목수 
+SELECT 
+    name as 이름, COUNT(sj_code) as 과목수
+FROM
+    score
+        RIGHT JOIN
+    student ON st_code = student.code
+GROUP BY student.code;
+
+# 서브쿼리 
+	# 쿼리안에 들어가는 쿼리
+	# select문 안에 들어가는 select문 
+# 장점
+	# 쿼리를 구조화 시킴
+    # join보다 가독성이 좋음
+    # 성능을 향상시킬 수 있음 
+# 서브쿼리 사용 위치
+	# select문에서 컬럼 대신 사용 
+    # from에서 테이블 대신 사용 : 이 때 as 테이블 별칭 
+    # where절에서 특정 값 대신 사용 
+    # having절에서 특정 값 대신 사용
+    # insert문에서 values 대신 사용 
+    # update문에서 값을 검색해서 바꿀 때 사용 
+    
+
+
+
+
+
+
+
+
