@@ -63,6 +63,14 @@ insert into buy(code, amount, id) values('ACC001', 2, 'asdasd');
 # 제품 수량 변경
 update product set amount = amount - 2 where code = 'ACC001';
 
+# 악세서리 -  제품명 : 백금목걸이, 내용 : 백금 목걸이입니다. 가격 : 50000, 썸네일 없음 
+insert into product(code, name, content, price, thumbnail, ca_code)
+values('ACC003', '백금목걸이', '백금 목걸이입니다.', 500000, null, 'ACC');
 
+# 악세서리 -  제품명 : 커플반지, 내용 : 커플반지입니다. 가격 : 150000, 썸네일 없음 
+insert into product(code, name, content, price, thumbnail, ca_code)
+values('ACC004', '커플반지', '커플반지입니다', 1500000, null, 'ACC');
 
-
+# 악세서리 -  제품명 : 돌반지, 내용 : 아이 돌반지입니다. 가격 : 350000, 썸네일 없음 
+insert into product(code, name, content, price, thumbnail, ca_code)
+values('ACC005', '돌반지', '아이 돌반지입니다.', 3500000, null, 'ACC');

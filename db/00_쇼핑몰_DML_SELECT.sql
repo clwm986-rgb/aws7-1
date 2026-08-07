@@ -66,6 +66,18 @@ where id = 'abc123';
 select product.* from (select * from cart where id = 'abc123') as c
 join product using(code);
 
+# 악세서리 중 가장 많이 팔린 제품을 조회
+# 고려사항 : 팔린 개수가 같으면 어떻게 처리할건가? 
+SELECT 
+    code, SUM(buy.amount) as 판매량, SUM(buy.amount * price) 판매액
+FROM
+    buy
+	join product using(code)
+GROUP BY code
+order by 판매량 desc, 판매액 desc, code
+limit 1;
+
+
 
 
 
