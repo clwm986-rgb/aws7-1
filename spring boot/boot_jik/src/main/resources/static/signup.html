@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	
+	<h1>회원 가입</h1>
+	<a href="/">메인페이지로 이동</a>
+	
+	<form id="form">
+		<input name="id" type="text" placeholder="아이디를 입력하세요."> <br>
+		<input name="pw" type="password" placeholder="비번을 입력하세요."> <br>
+		<input name="pw2" type="password" placeholder="비번확인을 입력하세요."> <br>
+		<input name="email" type="email" placeholder="이메일을 입력하세요."> <br>
+		<button>회원가입</button>
+	</form>
+	
+	<script type="text/javascript">
+		
+	//form요소를 submit했을 때 아이디, 비번, 비번확인, 이메일을 가져와서 아이디, 비번, 이메이을 서버에 전송
+	const formEl = document.querySelector("#form");
+	const idEl = document.querySelector("[name=id]");
+	const pwEl = document.querySelector("[name=pw]");
+	const pw2El = document.querySelector("[name=pw2]");
+	const emailEl = document.querySelector("[name=email]");
+	
+	formEl.addEventListener("submit", e=>{
+		e.preventDefault();
+		const id = idEl.value;
+		const pw = pwEl.value;
+		const pw2 = pw2El.value;
+		const email = emailEl.value;
+		
+		const queryString = `id=${id}&pw=${pw}&email=${email}`;
+		
+		sendData(queryString);
+		
+	});
+	
+	async function sendData(queryString){
+		try{
+			const response = await fetch("/user/signup?"+queryString);
+			
+			if(!response.ok){
+				throw Error("회원 가입 실패")
+			}
+			
+			const result = await response.text();
+			alert(result);
+			
+		}catch(e){
+			console.error("에러 발생 : ", e)
+			alert(e);
+		}
+	}
+	
+	</script>
+</body>
+</html>
+
+
+
+
+

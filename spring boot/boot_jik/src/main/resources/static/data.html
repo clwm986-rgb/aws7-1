@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<header style="text-align:right">
+		<span class="name">XXX</span>님이 접속했습니다.
+	</header>
+	
+	<h1>데이터 전송 연습 페이지</h1>
+	<a href="/">메인페이로 이동</a>
+	<pre>
+		데이터 전송 방법1
+		기본 : /user/nickname
+		경로에 데이터 실어 보내기 : /artcle/1
+		  - 1이 보낼 데이터  
+	</pre>
+	<h1>기사</h1>
+	<div>
+		<span>기사 번호</span>
+		<button onclick="getArticle(-1)">-</button>
+		<input type="number" value="1" readonly class="article-num">
+		<button onclick="getArticle(+1)">+</button>
+	</div>
+	<p class="article">
+		
+	</p>
+	
+	<script type="text/javascript">
+		const nameEl = document.querySelector(".name"); 
+		const articleEl = document.querySelector(".article");
+		const articleNumEl = document.querySelector(".article-num");
+	</script>
+	
+	<script type="text/javascript">
+		
+		//articleEl.textContent = "123";
+		//html 트리 로딩이 완료되면 
+		document.addEventListener("DOMContentLoaded", e=>{
+			
+			//서버에서 닉네임을 가져와 화면에 출력 
+			loadNickname();
+			//기사 내용을 가져와 화면에 출력
+			loadArticle(1);
+		});
+		
+		async function loadArticle(page){
+			try{
+				//서버에 데이터 요청
+				const response = await fetch("/article/"+page);
+				
+				//서버 응답이 잘못 되면 
+				if(!response.ok){
+					articleEl.textContent = "기사 불러오기 실패";
+					return;
+				}
+				//서버 응답이 정상이면(서버가 기사를 보내줌) 기사를 가져옴
+				const result = await response.text();
+				
+				//화면에 출력 
+				articleEl.textContent = result;
+			}catch(e){
+				console.error("예외 발생 : ", e);
+			}
+
+		}
+		
+		
+		//비동기 함수 : 이 함수가 실행되는 동안 다음 작업이 실행됨
+		async function loadNickname(){
+			
+			try{
+				//await : 비동기 함수 실행중이지만 얘 다 끝나야 다음 작업이 들어갈거야.
+				const response = await fetch("/user/nickname");
+				
+				//서버에서 ok(200번대)를 보내지 않으면 
+				if(!response.ok){
+					nameEl.textContent = "익명";
+					return;
+				}
+				
+				//서버에서 보낸 문자열을 가져오기 위해 텍스트로 변환
+				const name = await response.text();
+				nameEl.textContent = name;
+				
+			}catch(e){
+				console.error("에러 발생 : ", e)
+			}
+		}
+		
+	</script>
+	
+	<script type="text/javascript">
+		function getArticle(amount){
+			//기사 번호가 0보다 작거나 같게 되는걸 방지
+			let num = articleNumEl.value;
+			num = parseInt(num);//문자열을 정수로 변환
+			if(num + amount < 1){
+				return;
+			} 
+			articleNumEl.value = num + amount;
+			loadArticle(num+amount);
+		}
+	</script>
+</body>
+</html>
