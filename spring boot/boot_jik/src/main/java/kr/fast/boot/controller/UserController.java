@@ -1,6 +1,8 @@
 package kr.fast.boot.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,10 +35,14 @@ public class UserController {
 	
 	@PostMapping("/user/signup")
 	@ResponseBody
-	public String userSignupPost(@RequestBody SignupDTO dto) {
+	public ResponseEntity<String> userSignupPost(@RequestBody SignupDTO dto) {
 		
-		//서비스에게 회원가입 정보를 주면서 가입하라고 시킴 
-		userService.signup(dto);
-		return "회원 가입에 성공했습니다.";
+		try {
+			//서비스에게 회원가입 정보를 주면서 가입하라고 시킴 
+			userService.signup(dto);
+			return ResponseEntity.status(HttpStatus.CREATED).body("회원 가입에 성공했습니다.");
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());		
+		}
 	}
 }

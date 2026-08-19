@@ -81,9 +81,6 @@
 				body : JSON.stringify(data) //보낼 데이터
 			});
 			
-			if(!response.ok){
-				throw Error("회원 가입 실패")
-			}
 			
 			const result = await response.text();
 			alert(result);
