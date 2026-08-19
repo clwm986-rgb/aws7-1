@@ -33,6 +33,10 @@ public class UserService {
 		if(memberRepository.existsById(dto.getId())) {
 			throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
 		}
+		//이메일 중복 검사 
+		if(memberRepository.existsByEmail(dto.getEmail())) {
+			throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+		}
 		//비번 암호화 
 		
 		//회원가입

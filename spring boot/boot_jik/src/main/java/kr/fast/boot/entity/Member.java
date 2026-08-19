@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor //모든 필드를 매개변수로 하는 생성자를 추가
 public class Member {
 
-	@Id
+	@Id//기본키
+	@Column(length =15)
 	private String id;
 	
 	@Column(nullable = false, length =255)
