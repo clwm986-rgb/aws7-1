@@ -1,10 +1,19 @@
 package kr.fast.boot.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.fast.boot.dto.BoardDTO;
+import kr.fast.boot.dto.BoardResponse;
+import kr.fast.boot.entity.Board;
 import kr.fast.boot.service.BoardService;
 import lombok.AllArgsConstructor;
 
@@ -19,8 +28,58 @@ public class AdminController {
 	// method : post를 처리하는 메서드를 추가 
 	// 리턴 : "OK" 문자열을 리턴 
 	@PostMapping("/board")
-	public ResponseEntity<String> boardPost(){
-		return ResponseEntity.ok("ok");
+	public ResponseEntity<String> boardPost(@RequestBody BoardDTO dto){
+		//게시판 서비스야. 새 게시판 등록해줘. 여기 새 게시판명이 있어. 등록하고 결과를 알려줘
+		try {
+			boolean isInsert = boardService.insertBoard(dto);
+			return ResponseEntity.ok("게시판을 등록했습니다.");			
+		}catch (Exception e) {
+			return ResponseEntity.ok(e.getMessage());
+		}
+		
 	}
 	
+	//url : /api/admin/board
+	//method : put
+	//리턴 : "OK"
+	@PutMapping("/board")
+	public ResponseEntity<String> boardPut(@RequestBody BoardDTO dto){
+		try {
+			//서비스야. 게시판번호와 이름을 줄게. 게시판명를 수정해줘.
+			boardService.updateBoard(dto);
+			return ResponseEntity.ok("게시판을 수정했습니다.");			
+		}catch(Exception e) {
+			return ResponseEntity.ok(e.getMessage());			
+		}
+		
+		
+	}
+	
+	@GetMapping("/board")
+	public ResponseEntity<List<Board>> boardGet(){
+		//서비스야. 게시판목록을 가져와줘 
+		List<Board> list = boardService.getBoardList();
+		return ResponseEntity.ok(list);			
+	}
+	
+
+	@DeleteMapping("/board")
+	public ResponseEntity<String> boardDelete(@RequestBody BoardDTO dto){
+		//서비스야. 게시판 번호 줄게 게시판 삭제해줘 
+		//서비스.게시판삭제해(게시판번호);
+		try {
+			boardService.deleteBoard(dto.id());
+			return ResponseEntity.ok("게시판을 삭제했습니다.");			
+		}catch(Exception e) {
+			return ResponseEntity.ok(e.getMessage());
+		}
+	}
 }
+
+
+
+
+
+
+
+
