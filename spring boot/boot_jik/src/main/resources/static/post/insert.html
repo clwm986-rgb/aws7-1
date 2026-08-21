@@ -20,7 +20,7 @@
 				<input type="text" class="form-control" name="writer" placeholder="작성자">
 			</div>
 			<div class="form-group mb-3">
-				<select class="form-control board-list">
+				<select class="form-control board-list" name="boardId">
 					<option value="4">공지</option>
 				</select>
 			</div>
@@ -62,7 +62,42 @@
 	</script>
 	
 	<script>
-		
+		//form태그에 submit 이벤트를 등록.
+		//게시글 등록 버튼을 클릭하면 alert(1)이 띄도록
+		const formEl = document.querySelector("#insertForm");
+		formEl.addEventListener("submit", async e=>{
+			e.preventDefault();
+			
+			//form태그 안에 있는 입력 태그들 값들을 가져와서 객체로 만듬
+			const formData = new FormData(formEl);
+			const data = Object.fromEntries(formData.entries());
+			//data를 이용하여 서버에 전송
+			//URL : /api/post
+			//method : POST
+			try{
+				const response = await fetch("/api/post", {
+					method : "POST",
+					headers : {
+						"Content-Type" : "application/json"
+					}, 
+					body : JSON.stringify(data)
+				}); 
+				
+				if(!response.ok){
+					console.log("정상 종료 아님");
+					return;
+				}
+				const result = await response.text();
+				alert(result);
+				
+			}catch(e){
+				console.log("예외처리 : ", e);
+			}
+		});
 	</script>
 </body>
 </html>
+
+
+
+
