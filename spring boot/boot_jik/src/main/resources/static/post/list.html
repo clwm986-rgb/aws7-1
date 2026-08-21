@@ -33,5 +33,43 @@
 		</table>
 		<a href="/post/insert.html" class="btn btn-outline-success" >글쓰기</a>
 	</div>
+	
+	<script>
+		//게시글 목록을 가져와서 콘솔에 출력하도록 작업
+		getPostList();
+		
+		async function getPostList(){
+			// /api/post
+			// get
+			try{
+				const response = await fetch("/api/post");
+				
+				if(!response.ok){
+					console.log("상태 OK 아님");
+					return;
+				}
+				
+				const result = await response.json();
+				let listHtml = '';
+				//반복문으로 게시글들을 html코드로 변환
+				result.forEach(post=>{
+					listHtml += `
+						<tr>
+					      <td>${post.id}</td>
+					      <td><a href="/post/detail.html?num=${post.id}">${post.title}</a></td>
+					      <td>${post.memberId}</td>
+					      <td>${post.createdAt}</td>
+					      <td>${post.upCount}/${post.downCount}</td>
+					    </tr>
+					`;
+				});
+				
+				const tbodyEl = document.querySelector(".table tbody");
+				tbodyEl.innerHTML = listHtml;
+			}catch(e){
+				console.error(e);
+			}
+		}
+	</script>
 </body>
 </html>

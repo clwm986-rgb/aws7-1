@@ -1,5 +1,7 @@
 package kr.fast.boot.entity;
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -21,25 +23,25 @@ public class Post {
 	private String title;
 	
 	private String content;
-	@Column(name="created_at")
-	private String createdAt;
+	@Column(name="created_at", nullable = false)
+	private Date createdAt = new Date();
 	@Column(name="view_count")
 	private int viewCount;
 	@Column(name="up_count")
 	private int upCount;
 	@Column(name="down_count")
 	private int downCount;
-	@Column(name="is_deleted")
-	private char isDeleted;
+	@Column(name="is_deleted", nullable = false)
+	private char isDeleted = 'N';
 	@Column(name="member_id")
-	private String memeberId;
+	private String memberId;
 	@Column(name="board_id")
 	private int boardId;
 	
 	public Post(String title, String content, String writer, Integer boardId) {
 		this.title = title;
 		this.content = content;
-		this.memeberId = writer;
+		this.memberId = writer;
 		this.boardId = boardId;
 	}
 }

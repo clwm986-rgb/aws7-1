@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.fast.boot.dto.BoardDTO;
-import kr.fast.boot.dto.BoardResponse;
 import kr.fast.boot.entity.Board;
 import kr.fast.boot.repository.BoardRepository;
 import lombok.AllArgsConstructor;
