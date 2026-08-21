@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Post {
+	
 	@Id
 	private int id;
 	
@@ -32,6 +33,13 @@ public class Post {
 	private char isDeleted;
 	@Column(name="member_id")
 	private String memeberId;
-	@Column(name="post_id")
+	@Column(name="board_id")
 	private int boardId;
+	
+	public Post(String title, String content, String writer, Integer boardId) {
+		this.title = title;
+		this.content = content;
+		this.memeberId = writer;
+		this.boardId = boardId;
+	}
 }

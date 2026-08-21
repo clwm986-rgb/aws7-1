@@ -35,10 +35,14 @@ public class PostController {
 	
 	@PostMapping("")
 	public ResponseEntity<Object> get(@RequestBody PostDTO dto){
-		//서비스야 게시글 정보 줄테니 등록해줘.
-		//서비스야.게시글등록해줘(게시글정보);
-		//postService.insertPost(dto);
-		return ResponseEntity.ok("서버와 연결 성공");
+		try {
+			//서비스야 게시글 정보 줄테니 등록해줘.
+			//서비스야.게시글등록해줘(게시글정보);
+			postService.insertPost(dto);
+			return ResponseEntity.ok("서버와 연결 성공");
+		}catch(Exception e) {
+			return ResponseEntity.ok(e.getMessage());
+		}
 	}
 	
 }
