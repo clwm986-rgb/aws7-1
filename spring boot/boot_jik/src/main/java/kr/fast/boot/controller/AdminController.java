@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.fast.boot.dto.BoardDTO;
-import kr.fast.boot.dto.BoardResponse;
 import kr.fast.boot.entity.Board;
 import kr.fast.boot.service.BoardService;
 import lombok.AllArgsConstructor;
