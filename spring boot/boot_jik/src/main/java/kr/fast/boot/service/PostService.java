@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.fast.boot.dto.PostDTO;
+import kr.fast.boot.entity.Board;
 import kr.fast.boot.entity.Post;
 import kr.fast.boot.repository.BoardRepository;
 import kr.fast.boot.repository.PostRepository;
@@ -49,6 +50,13 @@ public class PostService {
 		
 		
 		return list;
+	}
+
+	public Post getPost(int id) {
+		Post post 
+		= postRepository.findById(id)
+			.orElseThrow(()-> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+		return post;
 	}
 	
 	

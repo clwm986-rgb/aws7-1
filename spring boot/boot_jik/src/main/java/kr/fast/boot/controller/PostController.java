@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +52,17 @@ public class PostController {
 		//게시글 목록 = 서비스야.게시글목록가져와();
 		List<Post> list = postService.getPostList();
 		return ResponseEntity.ok(list);
+		
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Object> idGet(@PathVariable("id")int id){
+		try {
+			Post post = postService.getPost(id);
+			return ResponseEntity.ok(post);
+		}catch(Exception e) {
+			return ResponseEntity.ok(null);
+		}
 		
 	}
 }
