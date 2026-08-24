@@ -15,35 +15,69 @@
 		<!-- 게시판, 제목, 내용, 첨부파일(지금은 생략), 작성자(로그인 기능 구현 후 제거) -->
 		<div class="form-group mb-3">
 			<label class="form-label">제목</label>
-			<input type="text" class="form-control" readonly>
+			<input type="text" class="form-control" readonly name="title">
 		</div>
 		<div class="form-group mb-3">
 			<label class="form-label">작성자</label>
-			<input type="text" class="form-control" readonly>
+			<input type="text" class="form-control" readonly name="writer">
 		</div>
 		<div class="form-group mb-3">
 			<label class="form-label">게시판</label>
-			<input type="text" class="form-control" readonly>
+			<input type="text" class="form-control" readonly name="boardId">
 		</div>
 		<div class="form-group mb-3">
 			<label class="form-label">조회수</label>
-			<input type="text" class="form-control" readonly>
+			<input type="text" class="form-control" readonly name="view">
 		</div>
 		<div class="form-group mb-3">
 			<label class="form-label">작성일</label>
-			<input type="text" class="form-control" readonly>
+			<input type="text" class="form-control" readonly name="createdAt">
 		</div>
 		<div class="mb-3 d-flex justify-content-center">
-			<button class="btn btn-outline-success me-3">좋아요(0)</button>
-			<button class="btn btn-outline-success">싫어요(0)</button>
+			<button class="btn btn-outline-success me-3">좋아요(<span class="up-count">0</span>)</button>
+			<button class="btn btn-outline-success">싫어요(<span class="down-count">0</span>)</button>
 		</div>
 		<div class="form-group mb-3">
 			<label class="form-label">내용</label>
-			<textarea class="form-control" rows="10" readonly></textarea>
+			<textarea class="form-control" rows="10" readonly name="content"></textarea>
 		</div>
 			
-		
+		<button class="btn btn-outline-danger btn-delete">삭제</button>
+		<button class="btn btn-outline-warning btn-update">수정</button>
 	</div>
+	
+	<script >
+		//btn-del 클릭이벤트를 등록
+		
+		//요소 선택
+		//const 요소명 = document.querySelector("선택자");
+		const deleteBtn = document.querySelector(".btn-delete");
+		
+		//이벤트 등록
+		deleteBtn.addEventListener("click", async e => {
+			try{
+				//서버로 요청
+				//url : /api/post/게시글번호
+				//method : delete
+				const response = await fetch(`/api/post/${postId}`,{
+					method : "DELETE"
+				});
+				if(!response.ok){
+					console.log("서버와 연결이 원할하지 않습니다.");
+					return;
+				}	
+				
+				const result = await response.text();
+				alert(result);
+				
+			}catch(e){
+				console.error(e);
+			}
+		});
+		
+		
+		
+	</script>
 	
 	<script>
 		//URL에 있는 게시글 번호 num을 가져옴
@@ -66,7 +100,15 @@
 				} */
 				
 				const result = await response.json();
-				console.log(result);
+				
+				document.querySelector("[name=title]").value = result.title;
+				document.querySelector("[name=writer]").value = result.memberId;
+				document.querySelector("[name=boardId]").value = result.boardId;
+				document.querySelector("[name=view]").value = result.viewCount;
+				document.querySelector("[name=createdAt]").value = result.createdAt;
+				document.querySelector("[name=content]").value = result.content;
+				document.querySelector(".up-count").textContent = result.upCount;
+				document.querySelector(".down-count").textContent = result.donwCount;
 			}catch(e){
 				console.error(e);
 			}

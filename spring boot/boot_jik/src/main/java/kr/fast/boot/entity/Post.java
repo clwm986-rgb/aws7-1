@@ -44,4 +44,14 @@ public class Post {
 		this.memberId = writer;
 		this.boardId = boardId;
 	}
+
+	public void updateView() {
+		this.viewCount++;
+	}
+
+	public void delete() {
+		isDeleted = 'Y';
+	}
+
+	
 }

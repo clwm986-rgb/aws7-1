@@ -3,6 +3,7 @@ package kr.fast.boot.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,6 +59,8 @@ public class PostController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Object> idGet(@PathVariable("id")int id){
 		try {
+			//서비스야 조회수 증가시켜줘
+			postService.updateView(id);
 			Post post = postService.getPost(id);
 			return ResponseEntity.ok(post);
 		}catch(Exception e) {
@@ -65,4 +68,18 @@ public class PostController {
 		}
 		
 	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Object> idDelete(@PathVariable("id") int id){
+		System.out.println("id : " + id);
+		try {
+			//서비스야 게시글 삭제해줘. 번호 여기있어
+			postService.deletePost(id);
+			return ResponseEntity.ok("게시글을 삭제했습니다.");
+		}catch(Exception e) {
+			return ResponseEntity.ok(e.getMessage());
+		}
+		
+	}
+	
 }
