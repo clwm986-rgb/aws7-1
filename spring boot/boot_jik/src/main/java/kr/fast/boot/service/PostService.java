@@ -84,6 +84,23 @@ public class PostService {
 		//직접 데이터 삭제
 		//postRepository.delete(post);
 	}
+	@Transactional
+	public void updatePost(int id, PostDTO dto) {
+		
+		//id와 일치하는 게시글을 가져옴
+		Post post = postRepository.findById(id)
+				.orElseThrow(()->new IllegalArgumentException("등록되지 않은 게시글입니다."));
+		//수정할 제목과 내용 체크
+		if(dto == null || !dto.checkTitleValid()) {
+			throw new IllegalArgumentException("제목을 입력하세요.");
+		}
+		if(!dto.checkContentValid()) {
+			throw new IllegalArgumentException("내용을 입력하세요.");
+		}
+		//게시글의 제목과 내용을 수정
+		post.update(dto.title(), dto.content());
+		
+	}
 	
 	
 }

@@ -89,7 +89,7 @@
 				}
 				const result = await response.text();
 				alert(result);
-				location.href ="/post/detail.html";
+				location.href ="/post/detail.html?num="+postId;
 			}catch(e){
 				console.log("예외처리 : ", e);
 			}

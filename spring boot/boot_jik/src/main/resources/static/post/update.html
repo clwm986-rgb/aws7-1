@@ -20,7 +20,7 @@
 			<div class="form-group mb-3">
 				<textarea class="form-control" rows="10" name="content" placeholder="작성자"></textarea>
 			</div>
-			<button class="btn btn-outline-success col-12">게시글 등록</button>
+			<button class="btn btn-outline-success col-12">게시글 수정</button>
 		</form>
 	</div>
 	
@@ -74,10 +74,10 @@
 			const data = Object.fromEntries(formData.entries());
 			//data를 이용하여 서버에 전송
 			//URL : /api/post
-			//method : POST
+			//method : PUT
 			try{
-				const response = await fetch("/api/post", {
-					method : "POST",
+				const response = await fetch("/api/post/" + postId, {
+					method : "PUT",
 					headers : {
 						"Content-Type" : "application/json"
 					}, 
@@ -90,7 +90,7 @@
 				}
 				const result = await response.text();
 				alert(result);
-				location.href ="/post/detail.html";
+				location.href ="/post/detail.html?num="+postId;
 			}catch(e){
 				console.log("예외처리 : ", e);
 			}
