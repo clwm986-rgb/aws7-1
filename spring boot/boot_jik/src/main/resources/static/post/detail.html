@@ -91,6 +91,12 @@
 		getPost(postId);
 		
 		async function getPost(postId){
+			//게시글 번호가 없으면
+			if(!postId){
+				alert("정상적이지 않은 접근입니다.");
+				location.href="/post/list.html";
+				return;
+			}
 			try{
 				const response = await fetch(`/api/post/${postId}`);
 				
@@ -100,6 +106,12 @@
 				} */
 				
 				const result = await response.json();
+				
+				if(result.isDeleted == "Y"){
+					alert("삭제된 게시글입니다.");
+					location.href="/post/list.html";
+					return;
+				}
 				
 				document.querySelector("[name=title]").value = result.title;
 				document.querySelector("[name=writer]").value = result.memberId;

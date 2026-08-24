@@ -32,7 +32,7 @@ public class Post {
 	@Column(name="down_count")
 	private int downCount;
 	@Column(name="is_deleted", nullable = false)
-	private char isDeleted = 'N';
+	private String isDeleted = "N";
 	@Column(name="member_id")
 	private String memberId;
 	@Column(name="board_id")
@@ -50,7 +50,7 @@ public class Post {
 	}
 
 	public void delete() {
-		isDeleted = 'Y';
+		isDeleted = "Y";
 	}
 
 	

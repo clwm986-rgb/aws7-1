@@ -45,7 +45,7 @@ public class PostService {
 	@Transactional
 	public List<Post> getPostList() {
 		//내림차순=>최신 게시글이 제일처음
-		List<Post> list = postRepository.findAllByOrderByIdDesc();
+		List<Post> list = postRepository.findAllByIsDeletedOrderByIdDesc("N");
 		//List<Post> list = postRepository.findAll();//오름차순=>최신 게시글이 제일 마지막
 		
 		
@@ -73,7 +73,7 @@ public class PostService {
 			.orElseThrow(()-> new IllegalArgumentException("삭제할 게시글이 없습니다."));
 		
 		//이미 삭제된 게시글이면 예외를 발생
-		if(post.getIsDeleted() == 'Y') {
+		if(post.getIsDeleted().equals("Y")) {
 			throw new IllegalArgumentException("이미 삭제된 게시글입니다.");
 		}
 		

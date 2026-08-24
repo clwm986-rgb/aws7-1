@@ -50,7 +50,16 @@
 				}
 				
 				const result = await response.json();
+				
 				let listHtml = '';
+				
+				//등록된 게시글이 없는 경우 화면 처리
+				if(result.length == 0){
+					listHtml = '<tr><td colspan="5" class="text-center">등록된 게시글이 없습니다.</td></tr>';
+					const tbodyEl = document.querySelector(".table tbody");
+					tbodyEl.innerHTML = listHtml;
+					return;
+				}
 				//반복문으로 게시글들을 html코드로 변환
 				result.forEach(post=>{
 					listHtml += `
