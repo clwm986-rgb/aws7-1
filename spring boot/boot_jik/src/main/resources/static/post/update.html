@@ -18,14 +18,6 @@
 				<input type="text" class="form-control" name="title" placeholder="제목">
 			</div>
 			<div class="form-group mb-3">
-				<input type="text" class="form-control" name="writer" placeholder="작성자">
-			</div>
-			<div class="form-group mb-3">
-				<select class="form-control board-list" name="boardId">
-					<option value="4">공지</option>
-				</select>
-			</div>
-			<div class="form-group mb-3">
 				<textarea class="form-control" rows="10" name="content" placeholder="작성자"></textarea>
 			</div>
 			<button class="btn btn-outline-success col-12">게시글 등록</button>
@@ -63,36 +55,6 @@
 			document.querySelector("[name=title]").value = result.title;
 			document.querySelector("[name=content]").value = result.content;
 			document.querySelector("[name=id]").value = result.id;
-			
-		}catch(e){
-			console.error(e);
-		}
-	}
-	</script>
-	
-	<!-- 게시판 목록 가져와서 화면에 출력  -->
-	<script>
-	getBoardList();
-	async function getBoardList(){
-		//서버에 게시판리스트를 요청해서 콘솔에 게시판 목록을 출력
-		//URL : /api/post/board
-		//method : GET
-		try{
-			const response = await fetch("/api/post/board");
-			if(!response.ok){
-				console.log("서버와 연결이 원할하지 않습니다.");
-				return;
-			}
-			const result = await response.json();
-			let str = '';
-			
-			result.forEach(b=>{
-				str += `
-					<option value="${b.id}">${b.name}</option>
-				`
-			});
-			const boardListEl = document.querySelector(".board-list");
-			boardListEl.innerHTML = str;
 			
 		}catch(e){
 			console.error(e);
