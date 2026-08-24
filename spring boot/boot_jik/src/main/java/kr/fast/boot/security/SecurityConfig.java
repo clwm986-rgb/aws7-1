@@ -4,12 +4,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig {
+	
+	private final JwtProvider jwtProvider;
+	
 	//암호화 하는 클래스
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -18,11 +27,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable()) // 초기 개발 시 CSRF 비활성화
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll() // 우선 모든 요청 허용 (암호화 테스트용)
-            );
+    	http
+	        .csrf(AbstractHttpConfigurer::disable)
+	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+	        //인증이 필요한 URL 또는 인증이 필요 없는 URL을 설정
+	        .authorizeHttpRequests(auth -> auth
+	        	// /api/auth/로 시작하는 모든 URL은 모두 접근이 가능
+	            .requestMatchers("/api/auth/**").permitAll()
+	            // /api/admin/로 시작하는 모든 URL은 로그인이 필요
+	            .requestMatchers("/api/admin/**").authenticated()
+	            // 그외 다른 URL들은 인증이 필요함
+	            .anyRequest().permitAll()
+	        )
+	        //필터 추가
+	        .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+
+    
         return http.build();
     }
 }
