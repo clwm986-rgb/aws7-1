@@ -15,15 +15,52 @@
 		
 		<form id="form">
 			<div class="form-group mb-3">
-				<input class="form-control" name="id" type="text" placeholder="아이디를 입력하세요.">		
+				<input class="form-control" name="username" type="text" placeholder="아이디를 입력하세요.">		
 			</div>
 			<div class="form-group mb-3">
-				<input class="form-control" name="pw" type="password" placeholder="비번을 입력하세요.">
+				<input class="form-control" name="password" type="password" placeholder="비번을 입력하세요.">
 			</div>
 			<button class="btn btn-outline-success col-12">로그인</button>
 		</form>	
 	</div>
 	
+	<script>
+	//form태그 요소 선택
+	const 폼 = document.querySelector("#form");
+	//form태그 요소에 submit 이벤트를 등록
+	폼.addEventListener("submit", async e=>{
+		e.preventDefault();
+		//form태그 안에 있는 입력값들을 객체로 만듬
+		const formData = new FormData(폼);
+		const data = Object.fromEntries(formData.entries());
+		
+		//서버에 로그인 정보를 전송
+		//url : /api/auth/login
+		//method : post
+		try{
+			const response = await fetch("/api/auth/login", {
+				method : "post",
+				headers : {
+					"Content-Type" : "application/json" //전송할 데이터 타입
+				},
+				body : JSON.stringify(data)
+			});
+			
+			if(!response.ok){
+				const result = await response.text();
+				alert(result);
+				return;
+			}
+			
+			const result = await response.json();
+			alert("로그인을 했습니다.");
+			//토큰을 로컬스토리지에 저장
+			localStorage.setItem(result.tokenType, result.token);
+		}catch(e){
+			console.error(e);
+		}
+	});
+	</script>
 	
 </body>
 </html>
