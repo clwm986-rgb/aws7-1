@@ -6,6 +6,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/layout.js"></script>
+<script src="/js/auth.js"></script>
 </head>
 <body>
 	<app-header></app-header>
@@ -31,8 +32,22 @@
 		    </tr>
 		  </tbody>
 		</table>
-		<a href="/post/insert.html" class="btn btn-outline-success" >글쓰기</a>
+		<a href="/post/insert.html" class="btn btn-outline-success btn-insert" >글쓰기</a>
 	</div>
+	
+	<script>
+		const 글쓰기버튼 = document.querySelector(".btn-insert");
+		글쓰기버튼.addEventListener("click", async e=>{
+			const info = await getMyInfo();
+			//로그인 안했으면 컨펌창 띄우고 
+			if(!info || !info.username){
+				e.preventDefault();
+				if(confirm("로그인이 필요한 서비스입니다.\n로그인페이지로 이동하겠습니까?")){
+					location.href="/login.html"
+				}
+			}
+		});
+	</script>
 	
 	<script>
 		//게시글 목록을 가져와서 콘솔에 출력하도록 작업

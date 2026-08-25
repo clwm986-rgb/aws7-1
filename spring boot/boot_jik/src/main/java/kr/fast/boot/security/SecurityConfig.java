@@ -2,6 +2,7 @@ package kr.fast.boot.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -36,6 +37,16 @@ public class SecurityConfig {
 	            .requestMatchers("/api/auth/**").permitAll()
 	            // /api/admin/로 시작하는 모든 URL은 로그인이 필요
 	            .requestMatchers("/api/admin/**").authenticated()
+	            //로그인한 사용자만 접근할 수 있는 URL 설정
+	            .requestMatchers(HttpMethod.POST, 
+	            		"/api/post" //게시글 등록
+	            		).authenticated()
+	            .requestMatchers(HttpMethod.PUT, 
+	            		"/api/post/*" //게시글 수정
+	            		).authenticated()
+	            .requestMatchers(HttpMethod.DELETE, 
+	            		"/api/post/*" //게시글 삭제
+	            		).authenticated()
 	            // 그외 다른 URL들은 인증이 필요함
 	            .anyRequest().permitAll()
 	        )
