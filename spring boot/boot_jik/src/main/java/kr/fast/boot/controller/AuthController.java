@@ -61,10 +61,9 @@ public class AuthController {
 		log.info("토큰 재발급중입니다.");
 		try {
 			
-			log.info(refreshToken);
-			
+			String accessToken = authService.createNewAccessToken(refreshToken);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("accessToken", null);
+			map.put("accessToken", accessToken);
 			return ResponseEntity.ok(map);
 		}catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());

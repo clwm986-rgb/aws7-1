@@ -64,8 +64,10 @@ async function authFetch(url, options ={}){
 		if(newAccessToken){
 			//새 access토큰을 로컬 스토리지에 저장
 			localStorage.setItem("accessToken", newAccessToken);
-			//응답 헤더에 새 access토큰을 추가해서 요청을 다시 함
-			response = await fetch(url, config);
+			//응답 헤더에 새 access토큰을 추가
+			config.headers["Authorization"] = "Bearer " + newAccessToken;		
+			//요청을 다시 함
+			return await fetch(url, config);
 		}
 		//리프레쉬토큰이 만료되어서 새 사원증을 발급받지 못함
 		else{

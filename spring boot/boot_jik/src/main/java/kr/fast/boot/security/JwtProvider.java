@@ -90,10 +90,15 @@ public class JwtProvider{
         return Jwts.builder()
                 .subject(username)
                 //토큰에 넣고 싶은 정보를 claim을 통해 넣어줌
-                .claim("type", " refresh")
+                .claim("type", "refresh")
                 .issuedAt(now)
                 .expiration(validity)
                 .signWith(key)
                 .compact();//JWTBuilder객체를 문자열로 만듬(토큰)
     }
+
+	public boolean isRefreshToken(String refreshToken) {
+		
+		return "refresh".equals(parseClaims(refreshToken).get("type"));
+	}
 }
