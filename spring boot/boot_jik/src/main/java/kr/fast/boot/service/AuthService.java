@@ -1,5 +1,6 @@
 package kr.fast.boot.service;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +37,19 @@ public class AuthService {
 			throw new IllegalArgumentException("아이디나 비번이 일치하지 않습니다.");
 		}
 		//같으면 토큰을 생성
-		String token = jwtProvider.createToken(user.getId(), user.getRole());
-		return new TokenDTO("accessToken", token);
+		String accessToken = jwtProvider.createToken(user.getId(), user.getRole());
+		
+		String refreshToken = jwtProvider.createRefreshToken(user.getId());
+		//리프레쉬토큰을 저장할 쿠키 생성
+		ResponseCookie refreshCookie = 
+				ResponseCookie.from("refreshToken", refreshToken)
+					.httpOnly(true) // js 접근 불가
+					.secure(false) //HTTP에서도 전송되도록
+					.sameSite("Lax") //다른 사이트에서 요청 시 전송 제한
+					.path("/api/auth/refresh") //해당 URL 요청시에만 쿠키 전송
+					.maxAge(7 * 24 * 60 * 60) //쿠키 유효 기간 : 7일
+					.build();
+		return new TokenDTO(accessToken, refreshCookie);
 	}
 	
 }

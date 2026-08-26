@@ -55,7 +55,7 @@
 			const result = await response.json();
 			alert("로그인을 했습니다.");
 			//토큰을 로컬스토리지에 저장
-			localStorage.setItem(result.tokenType, result.token);
+			localStorage.setItem("accessToken", result.accessToken);
 		}catch(e){
 			console.error(e);
 		}

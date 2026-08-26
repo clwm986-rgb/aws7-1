@@ -17,17 +17,21 @@ public class JwtProvider{
 
 	
     private final SecretKey key;
-    //토큰 유지 시간
-    private final long expiration;
+    //어세스토큰 유지 시간
+    private final long accessTokenInMs;
+    //리프레쉬토큰 유지 시간
+    private final long refreshTokenInMs;
 
     //생성자
     public JwtProvider(
     		//@Value : application.properties에 있는 값을 가져옴
     		//jwt.secret : JWT을 만들 때 사용될 문자열 => 노출되면 안됨.
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.expiration}") long expiration){
+            @Value("${jwt.access-token-in-ms}") long accessTokenInMs,
+            @Value("${jwt.refresh-token-in-ms}") long refreshTokenInMs){
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        this.expiration = expiration;
+        this.accessTokenInMs = accessTokenInMs;
+        this.refreshTokenInMs = refreshTokenInMs;
     }
 
     //토큰 생성 
@@ -35,7 +39,7 @@ public class JwtProvider{
         //토큰 생성 시간
     	Date now = new Date();
     	//토큰 만료 시간
-        Date validity = new Date(now.getTime() + expiration);
+        Date validity = new Date(now.getTime() + accessTokenInMs);
         
         
         return Jwts.builder()
@@ -74,5 +78,22 @@ public class JwtProvider{
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+    
+    public String createRefreshToken(String username) {
+    	//토큰 생성 시간
+    	Date now = new Date();
+    	//토큰 만료 시간
+        Date validity = new Date(now.getTime() + refreshTokenInMs);
+        
+        
+        return Jwts.builder()
+                .subject(username)
+                //토큰에 넣고 싶은 정보를 claim을 통해 넣어줌
+                .claim("type", " refresh")
+                .issuedAt(now)
+                .expiration(validity)
+                .signWith(key)
+                .compact();//JWTBuilder객체를 문자열로 만듬(토큰)
     }
 }

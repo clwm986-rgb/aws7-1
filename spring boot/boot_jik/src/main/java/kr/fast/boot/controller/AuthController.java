@@ -1,17 +1,21 @@
 package kr.fast.boot.controller;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletResponse;
 import kr.fast.boot.dto.LoginDTO;
 import kr.fast.boot.dto.TokenDTO;
 import kr.fast.boot.service.AuthService;
@@ -27,10 +31,13 @@ public class AuthController {
 	private final AuthService authService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<Object> loginPost(@RequestBody LoginDTO dto){
+	public ResponseEntity<Object> loginPost(
+			@RequestBody LoginDTO dto,
+			HttpServletResponse response){
 		log.info("로그인 중입니다.");
 		try {
 			TokenDTO tokenDto = authService.login(dto);
+			response.addHeader(HttpHeaders.SET_COOKIE, tokenDto.refreshCookie().toString());
 			return ResponseEntity.ok(tokenDto);
 		}catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -42,6 +49,22 @@ public class AuthController {
 		try {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("username", username);
+			return ResponseEntity.ok(map);
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+		}
+	}
+	@PostMapping("/refresh")
+	public ResponseEntity<Object> refreshPost(
+			@CookieValue(name="refreshToken", required = false)String refreshToken,
+			HttpServletResponse response){
+		log.info("토큰 재발급중입니다.");
+		try {
+			
+			log.info(refreshToken);
+			
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("accessToken", null);
 			return ResponseEntity.ok(map);
 		}catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());

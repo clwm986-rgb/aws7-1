@@ -38,13 +38,18 @@
 	<script>
 		const 글쓰기버튼 = document.querySelector(".btn-insert");
 		글쓰기버튼.addEventListener("click", async e=>{
+			e.preventDefault();	
 			const info = await getMyInfo();
+
 			//로그인 안했으면 컨펌창 띄우고 
-			if(!info || !info.username){
-				e.preventDefault();
+			if(!info || !info.username || info.username == "anonymousUser"){
+				
 				if(confirm("로그인이 필요한 서비스입니다.\n로그인페이지로 이동하겠습니까?")){
 					location.href="/login.html"
 				}
+			}
+			else{
+				location.href="/post/insert.html";
 			}
 		});
 	</script>

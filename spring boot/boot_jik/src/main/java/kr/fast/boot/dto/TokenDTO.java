@@ -1,3 +1,5 @@
 package kr.fast.boot.dto;
 
-public record TokenDTO(String tokenType, String token) {}
+import org.springframework.http.ResponseCookie;
+
+public record TokenDTO(String accessToken, ResponseCookie refreshCookie) {}
