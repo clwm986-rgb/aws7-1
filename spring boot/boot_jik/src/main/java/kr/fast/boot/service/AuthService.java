@@ -41,14 +41,19 @@ public class AuthService {
 		
 		String refreshToken = jwtProvider.createRefreshToken(user.getId());
 		//리프레쉬토큰을 저장할 쿠키 생성
-		ResponseCookie refreshCookie = 
-				ResponseCookie.from("refreshToken", refreshToken)
-					.httpOnly(true) // js 접근 불가
-					.secure(false) //HTTP에서도 전송되도록
-					.sameSite("Lax") //다른 사이트에서 요청 시 전송 제한
-					.path("/api/auth/refresh") //해당 URL 요청시에만 쿠키 전송
-					.maxAge(7 * 24 * 60 * 60) //쿠키 유효 기간 : 7일
-					.build();
+		ResponseCookie refreshCookie 
+			= createCookie(
+					"refreshToken", 
+					refreshToken, 
+					7 * 24 * 60 * 60, 
+					"/api/auth/refresh"); 
+//				ResponseCookie.from("refreshToken", refreshToken)
+//					.httpOnly(true) // js 접근 불가
+//					.secure(false) //HTTP에서도 전송되도록
+//					.sameSite("Lax") //다른 사이트에서 요청 시 전송 제한
+//					.path("/api/auth/refresh") //해당 URL 요청시에만 쿠키 전송
+//					.maxAge(7 * 24 * 60 * 60) //쿠키 유효 기간 : 7일
+//					.build();
 		return new TokenDTO(accessToken, refreshCookie);
 	}
 
@@ -73,6 +78,18 @@ public class AuthService {
 		String accessToken = jwtProvider.createToken(username, role);
 		//생성한 어세스 토큰을 리턴
 		return accessToken;
+	}
+
+	public ResponseCookie createCookie(
+			String cookieName, String value, int maxAge, String path) {
+		
+		return ResponseCookie.from(cookieName, value)
+				.httpOnly(true) // js 접근 불가
+				.secure(false) //HTTP에서도 전송되도록
+				.sameSite("Lax") //다른 사이트에서 요청 시 전송 제한
+				.path(path) //해당 URL 요청시에만 쿠키 전송
+				.maxAge(maxAge) //쿠키 유효 기간 : 7일
+				.build();
 	}
 	
 }

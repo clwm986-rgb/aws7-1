@@ -11,6 +11,19 @@
 		async function logout(){
 			//로컬 스토리지에 있는 accessToken을 제거
 			localStorage.removeItem("accessToken"); 
+			//리프레쉬 쿠키를 삭제 
+			try{
+				const response = await fetch("/api/auth/logout", {
+					method : "post"
+				});
+				
+				if(!response.ok){
+					return;
+				}
+				
+			}catch(e){
+				console.error(e);
+			}
 			location.href = "/index.html";
 		}
 	</script>
