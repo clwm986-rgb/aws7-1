@@ -2,10 +2,12 @@ package kr.fast.community.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.fast.community.dto.MessageResponse;
+import kr.fast.community.dto.SignupRequest;
 import kr.fast.community.service.AuthService;
 import lombok.AllArgsConstructor;
 
@@ -17,10 +19,15 @@ public class AuthController {
 	private final AuthService authService;
 
 	@PostMapping("/signup")
-	public ResponseEntity<Object> signup(){
+	public ResponseEntity<Object> signup(@RequestBody SignupRequest signupRequest){
 		
-		MessageResponse messageResponse = new MessageResponse(true, "회원 가입이 완료 되었습니다.");
+		try {
+			MessageResponse messageResponse = authService.signup(signupRequest);
+			return ResponseEntity.ok(messageResponse);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.ok(new MessageResponse(false, e.getMessage()));
+		}
 		
-		return ResponseEntity.ok(messageResponse);
 	}
 }
