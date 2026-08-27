@@ -44,7 +44,19 @@ async function getPosts(){
 		
 		//table태그 안 body에 html코드를 덮어쓰기
 		const 테이블바디 = document.querySelector(".table tbody");
-		테이블바디.innerHTML = str;
+		
+		if(result.length != 0){
+			테이블바디.innerHTML = str;			
+		}
+		else{
+			테이블바디.innerHTML = `
+				<tr>
+					<td class="text-center" colspan="5">등록된 게시글이 없습니다.</td>
+				</tr>
+			`;
+		}
+		
+		
 	}catch(e){
 		console.error("게시글 목록 불러오기 실패 : ", e);
 	}
