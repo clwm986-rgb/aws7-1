@@ -4,9 +4,13 @@ import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,14 +44,16 @@ public class Post {
 	private String isDeleted = "N";
 	@Column(name="member_id")
 	private String memberId;
-	@Column(name="board_id")
-	private int boardId;
+	
+	@ManyToOne(fetch=FetchType.LAZY)//다대일. 여러 게시글이 하나의 게시판과 연결. 지연 로딩
+	@JoinColumn(name="board_id")//자동으로 join문을 만들어 게시판 정보를 가져옴
+	private Board board;
 	
 	public Post(String title, String content, String writer, Integer boardId) {
 		this.title = title;
 		this.content = content;
 		this.memberId = writer;
-		this.boardId = boardId;
+		//this.boardId = boardId;
 	}
 
 	public void updateView() {
