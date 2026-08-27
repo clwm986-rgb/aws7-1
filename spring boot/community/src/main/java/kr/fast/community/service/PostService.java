@@ -23,5 +23,17 @@ public class PostService {
 		
 		return list;
 	}
+
+	public Post getPost(int 게시글번호) {
+		//레포야 게시글 가져와. 번호 여기있어 => 게시글 없어? 예외 발생해
+		Post post = postRepository.findById(게시글번호)
+				.orElseThrow(()->new IllegalArgumentException("존재하지 않은 게시글입니다."));
+		//게시글 삭제 됐어? 예외 발생해 
+		if(post.getIsDeleted().equals("Y")) {
+			throw new IllegalArgumentException("삭제된 게시글입니다.");
+		}
+		//게시글 반환
+		return post;
+	}
 	
 }
