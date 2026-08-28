@@ -1,9 +1,12 @@
 package kr.fast.community.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,8 +58,20 @@ public class AuthController {
 		
 	}
 	@GetMapping("/me")
-	public ResponseEntity<Object> me(@AuthenticationPrincipal CustomUserDetails userDtails){
-		return ResponseEntity.ok(userDtails);
+	public ResponseEntity<Object> me(@AuthenticationPrincipal CustomUserDetails userDetails){
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(userDetails != null) {
+			map.put("username", userDetails.getUsername());
+			map.put("email", userDetails.getEmail());
+			map.put("nickname", userDetails.getNickname());
+			
+			List<String> list = new ArrayList<String>();
+			for(GrantedAuthority tmp : userDetails.getAuthorities()) {
+				list.add(tmp.getAuthority());
+			}
+			map.put("role", list);
+		}
+		return ResponseEntity.ok(map);
 		
 	}
 }

@@ -13,3 +13,11 @@ class AppHeader extends HTMLElement {
 }
 
 customElements.define('app-header', AppHeader);
+
+async function logout(e){
+	e.preventDefault();
+	//사원증 제거
+	localStorage.removeItem("accessToken");
+	//메인페이지로 이동
+	location.href="/";
+}

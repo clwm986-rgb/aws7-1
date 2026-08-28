@@ -4,7 +4,7 @@ async function getMyInfo(){
 	const token = localStorage.getItem("accessToken");
 	
 	if(!token){
-		console.error("로그인이 필요합니다.");
+		//console.error("로그인이 필요합니다.");
 		return null;
 	}
 	//토큰을 서버에 전송하여 회원 정보 가져옴
