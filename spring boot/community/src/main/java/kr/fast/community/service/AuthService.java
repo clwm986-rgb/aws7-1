@@ -67,7 +67,7 @@ public class AuthService {
 			throw new IllegalArgumentException("아이디나 비번이 일치하지 않습니다.");
 		}
 		//사원증(토큰) 발급
-		String accessToken = jwtProvider.createToken(user.getId(), user.getRole());
+		String accessToken = jwtProvider.createToken(user.getId(), user.getRole()/*, user.getNickname(), user.getEmail()*/);
 		//사원증 리턴
 		return accessToken;
 	}

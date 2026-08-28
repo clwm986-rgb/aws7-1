@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import kr.fast.community.dto.LoginRequest;
 import kr.fast.community.dto.MessageResponse;
 import kr.fast.community.dto.SignupRequest;
+import kr.fast.community.security.CustomUserDetails;
 import kr.fast.community.service.AuthService;
 import lombok.AllArgsConstructor;
 
@@ -54,9 +55,8 @@ public class AuthController {
 		
 	}
 	@GetMapping("/me")
-	public ResponseEntity<Object> me(@AuthenticationPrincipal String username){
-		System.out.println(username);
-		return ResponseEntity.ok("{}");
+	public ResponseEntity<Object> me(@AuthenticationPrincipal CustomUserDetails userDtails){
+		return ResponseEntity.ok(userDtails);
 		
 	}
 }
