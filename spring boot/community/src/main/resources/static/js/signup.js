@@ -58,7 +58,6 @@ async function signup(e){
 		}
 		//성공하면 성공문구를 출력하고 메인페이지로
 		const result = await response.json();
-		console.log(result)
 		alert(result.message);
 		//회원 가입 성공 후 메인 페이지로 이동
 		if(result.success){
