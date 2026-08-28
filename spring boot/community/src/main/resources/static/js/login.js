@@ -37,6 +37,7 @@ async function login(e){
 		//회원가입에 성공하면 사원증 저장
 		if(result.state.success){
 			localStorage.setItem("accessToken", result.accessToken);
+			location.href ="/";
 		}
 		
 	}catch(e){

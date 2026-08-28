@@ -24,13 +24,18 @@ public class JwtProvider{
         this.expiration = expiration;
     }
 
-    public String createToken(String username, String role){
+    //nickname과 email을 추가하는 경우 주석을 참고
+    public String createToken(String username, String role
+    		/*, String nickname, String email */
+    		){
         Date now = new Date();
         Date validity = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
                 .subject(username)
                 .claim("role", role)
+                //.claim("nickname", nickname)
+                //.claim("email", email)
                 .issuedAt(now)
                 .expiration(validity)
                 .signWith(key)
@@ -41,8 +46,8 @@ public class JwtProvider{
         return parseClaims(token).getSubject();
     }
 
-    public String getRole(String token){
-        return parseClaims(token).get("role", String.class);
+    public String get(String token, String name){
+        return parseClaims(token).get(name, String.class);
     }
 
     public boolean validateToken(String token){
