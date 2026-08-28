@@ -33,7 +33,11 @@ async function login(e){
 		}
 		//성공하면 성공문구를 출력하고 메인페이지로
 		const result = await response.json();
-		console.log(result)
+		alert(result.state.message);
+		//회원가입에 성공하면 사원증 저장
+		if(result.state.success){
+			localStorage.setItem("accessToken", result.accessToken);
+		}
 		
 	}catch(e){
 		console.log("로그인 실패 : ", e);
