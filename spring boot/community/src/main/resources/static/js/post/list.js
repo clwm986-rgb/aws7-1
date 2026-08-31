@@ -31,8 +31,8 @@ async function getPosts(){
 		}
 		//가져오 게시글들을 이용하여 html코드로 구성
 		const result = await response.json();
-		const {content} = result;
-		console.log(result)
+		const {content, hasPrev, hasNext, startPage, endPage, page} = result;
+		
 		let str = '';
 		content.forEach(post=>{
 			str += `
@@ -60,7 +60,40 @@ async function getPosts(){
 			`;
 		}
 		
+		const 페이지네이션 = document.querySelector(".pagination");
 		
+		let 페이지네이션코드 = '';
+		
+		//이전 페이지
+		if(hasPrev){
+			페이지네이션코드 += `
+				<li class="page-item">
+			    	<a class="page-link" href="javascript:void(0);" onclick="changePage(${startPage - 1 - 1})">이전</a>
+		    	</li>
+			`;
+		}
+		
+		//숫자페이지
+		for(i = startPage; i <= endPage; i++ ){
+			//현재 페이지에 색상을 추가
+			const active = i == page ? "active" : "";
+			페이지네이션코드 += `
+				<li class="page-item ${active}">
+			    	<a class="page-link" href="javascript:void(0);" onclick="changePage(${i- 1})">${i}</a>
+		    	</li>
+			`
+		}
+		
+		//다음 페이지
+		if(hasNext){
+			페이지네이션코드 += `
+				<li class="page-item">
+			    	<a class="page-link" href="javascript:void(0);" onclick="changePage(${endPage + 1 - 1})">다음</a>
+		    	</li>
+			`;
+		}
+		
+		페이지네이션.innerHTML = 페이지네이션코드;
 	}catch(e){
 		console.error("게시글 목록 불러오기 실패 : ", e);
 	}
