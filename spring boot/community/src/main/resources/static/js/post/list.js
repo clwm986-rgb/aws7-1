@@ -21,16 +21,20 @@ async function getPosts(){
 			headers : {},
 			body : 보낼값
 		});*/
-		const response = await fetch("/api/posts");
+		
+		const queryString = '?' + new URLSearchParams(data).toString();
+		console.log(queryString)
+		const response = await fetch("/api/posts" + queryString);
 		
 		if(!response.ok){
 			throw Error("서버 상태 이상");
 		}
 		//가져오 게시글들을 이용하여 html코드로 구성
 		const result = await response.json();
-		
+		const {content} = result;
+		console.log(result)
 		let str = '';
-		result.forEach(post=>{
+		content.forEach(post=>{
 			str += `
 				<tr>
 			      <td>${post.id}</td>
@@ -60,4 +64,38 @@ async function getPosts(){
 	}catch(e){
 		console.error("게시글 목록 불러오기 실패 : ", e);
 	}
+}
+/* ========================
+검색 버튼 눌렀을 때
+======================== */
+function submitSearch(e){
+	e.preventDefault();
+	getPosts();
+}
+/* ========================
+게시글 페이지를 눌렀을 때(이전, 다음, 번호)
+======================== */
+function changePage(page){
+	data.page = page;
+	getPosts();
+}
+
+const data = {
+	type : 'all', //검색 타입
+	keyword : '', //검색어
+	page : 0, // 현재 페이지 번호 -1
+	size : 3, //한 페이지의 게시글 수
+	sort : 'id,desc' //정렬 방법
+	//page, size, sort가 자동으로 컨트롤러에 Pageable 클래스의 객체로 들어감
+}
+/* ========================
+- 입력태그(input, seletec, textarea등)에 입력하면 입력된 값들을 가져와서 
+  data 객체에 저장하도록 하는 함수
+- 단, data 객체는 전역으로 선언이 되어 있어야 한다.
+======================== */
+function changeInput(e){
+	//객체에 있는 값들을 변수에 쉽게 저장하는 방법
+	const {name, value}	= e.target;
+	//객체에 있는 속성의 값을 변경
+	data[name] = value;
 }

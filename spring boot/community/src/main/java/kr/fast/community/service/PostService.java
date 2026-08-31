@@ -1,10 +1,11 @@
 package kr.fast.community.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import kr.fast.community.dto.MessageResponse;
+import kr.fast.community.dto.PageResponse;
 import kr.fast.community.dto.PostRequest;
 import kr.fast.community.entity.Board;
 import kr.fast.community.entity.Post;
@@ -22,14 +23,22 @@ public class PostService {
 	private final BoardRepository boardRepository;
 	private final MemberRepository memberRepository;
 
-	public List<Post> getPosts() {
-		//전체 게시글을 가져오는 코드를 작성 해보세요.
-		//레포야 게시글 전체를 가져와 : findAll()
-		//=> 레포야 삭제 안된 게시글 전체를 가져와 : findAllByIsDeleted("N")
-		//=> 레포야 삭제 안된 게시글 전체를 최신순으로 가져와 : findAllByIsDeletedOrderByIdDesc("N")
-		List<Post> list = postRepository.findAllByIsDeletedOrderByIdDesc("N");
-		
-		return list;
+	public PageResponse<Post> getPosts(String type, String keyword, Pageable pageable) {
+		Page<Post> page;
+		//검색어 없으면 타입에 상관없이 전체 검색
+		if(keyword == null || keyword.isBlank()) {
+			page = postRepository.findAllByIsDeletedContaining("N", pageable);		
+		}
+		else if("title".equals(type)) {
+			page = postRepository.findAllByIsDeletedAndTitleContaining("N",  keyword, pageable);
+		}
+		else if("writer".equals(type)) {
+			page = postRepository.findAllByIsDeletedAndMemberIdContaining("N",  keyword, pageable);
+		}
+		else{
+			page = postRepository.findAllByIsDeletedContaining("N", pageable);
+		}
+		return new PageResponse<Post>(page, 3);
 	}
 
 	public Post getPost(int 게시글번호) {

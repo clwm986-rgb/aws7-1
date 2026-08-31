@@ -13,6 +13,16 @@
 	<app-header></app-header>
 	<div class="container">
 		<h1>게시글 목록</h1>
+		<hr>
+		<form class="input-group mb-3" onsubmit="submitSearch(event)">
+			<select class="form-control" name="type" oninput="changeInput(event)">
+				<option value="all">전체</option>
+				<option value="title">제목</option>
+				<option value="writer">작성자</option>
+			</select>
+		  	<input type="text" class="form-control" name="keyword" oninput="changeInput(event)">
+		  	<button class="btn btn-success" type="submit">검색</button>
+		</form>
 		<table class="table table-hover">
 		  <thead>
 		    <tr>
@@ -33,6 +43,17 @@
 		    </tr>
 		  </tbody>
 		</table>
+		<ul class="pagination justify-content-center">
+		    <li class="page-item">
+		    	<a class="page-link" href="javascript:void(0);" onclick="changePage(1)">이전</a>
+	    	</li>
+		    <li class="page-item">
+		    	<a class="page-link" href="javascript:void(0);" onclick="changePage(0)">1</a>
+		    </li>
+		    <li class="page-item">
+		    	<a class="page-link" href="javascript:void(0);" onclick="changePage(2)">다음</a>
+		    </li>
+		</ul>
 		<a href="/post/insert.html" class="btn btn-outline-success btn-insert" >글쓰기</a>
 	</div>
 </body>
