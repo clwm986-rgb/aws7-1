@@ -1,7 +1,9 @@
 package kr.fast.community.controller;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import kr.fast.community.dto.MessageResponse;
 import kr.fast.community.dto.PageResponse;
 import kr.fast.community.dto.PostRequest;
+import kr.fast.community.entity.File;
 import kr.fast.community.entity.Post;
 import kr.fast.community.security.CustomUserDetails;
 import kr.fast.community.service.PostService;
@@ -48,7 +51,11 @@ public class PostController {
 		try {
 			//서비스야 게시글 가져와. 번호 여기있어.
 			Post post = postService.getPost(게시글번호);
-			return ResponseEntity.ok(post);
+			List<File> files = postService.getFiles(게시글번호);
+			Map<String, Object> map = new HashMap<String,Object>();
+			map.put("post", post);
+			map.put("files", files);
+			return ResponseEntity.ok(map);
 		}catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}

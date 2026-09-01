@@ -38,7 +38,7 @@ async function getPosts(){
 			str += `
 				<tr>
 			      <td>${post.id}</td>
-			      <td><a href="/post/detail.html?num=${post.id}">${post.content}</a></td>
+			      <td><a href="/post/detail.html?num=${post.id}">${post.title}</a></td>
 			      <td>${post.memberId}</td>
 			      <td>${post.createdAt.slice(0,10)}</td>
 			      <td>${post.upCount}/${post.downCount}</td>

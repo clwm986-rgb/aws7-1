@@ -26,8 +26,10 @@ async function getPost(){
 			alert(result);
 			throw Error("게시글이 없거나 삭제 됨");
 		}
-		const post = await response.json();
-
+		const result = await response.json();
+		const post = result.post;
+		const files= result.files;
+		
 		//가져온 게시글을 화면에 출력
 		insertValue("[name=title]", post.title);
 		insertValue("[name=writer]", post.memberId);
@@ -40,6 +42,25 @@ async function getPost(){
 		
 		//수정/추가버튼 보여주기/감추기
 		visibleButtons(false);
+		
+		const 첨부파일박스 = document.querySelector("#files");
+		//첨부파일 없으면
+		if(!files || files.length == 0){
+			첨부파일박스.innerHTML = `<div class="form-control">없음</div>`;
+			return;
+		}
+		let html = '';
+		//첨부파일 있으면 
+		files.forEach(file=>{
+			html += `
+				<a 
+					class="form-control" href="/api/upload/${file.savedName}" 
+					download="${file.originalName}" >
+					${file.originalName}
+				</a>
+			`;
+		})
+		첨부파일박스.innerHTML = html;
 	}catch(e){
 		console.error("게시글 가져오기 실패 : ", e);
 	}

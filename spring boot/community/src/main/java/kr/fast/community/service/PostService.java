@@ -106,19 +106,26 @@ public class PostService {
 		//게시글 등록
 		Post savedPost = postRepository.save(post);
 		
-		//첨부파일을 등록
-		//1. 첨부파일을 서버에 업로드
-		for(MultipartFile file : files) {
-			String savedName = FileUtils.saveFile(uploadFilePath, file);		
-			String originalName = file.getOriginalFilename();
-
-			//2. 첨부파일을 이용하여 db에 저장
-			//2-1. File 엔티티 객체를 생성
-			File fileEntity = new File(originalName, savedName, savedPost.getId());
-			//2-2. 저장
-			fileRepository.save(fileEntity);
+		if(files != null) {
+			//첨부파일을 등록
+			//1. 첨부파일을 서버에 업로드
+			for(MultipartFile file : files) {
+				String savedName = FileUtils.saveFile(uploadFilePath, file);		
+				String originalName = file.getOriginalFilename();
+	
+				//2. 첨부파일을 이용하여 db에 저장
+				//2-1. File 엔티티 객체를 생성
+				File fileEntity = new File(originalName, savedName, savedPost.getId());
+				//2-2. 저장
+				fileRepository.save(fileEntity);
+			}
 		}
-		return new MessageResponse(true, "게시글을 동록했습니다.");
+		return new MessageResponse(true, "게시글을 등록했습니다.");
+	}
+
+	public List<File> getFiles(int 게시글번호) {
+		
+		return fileRepository.findAllByPostId(게시글번호);
 	}
 	
 }
