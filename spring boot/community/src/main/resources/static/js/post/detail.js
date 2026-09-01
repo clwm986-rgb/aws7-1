@@ -79,5 +79,42 @@ function visibleButtons(visible){
 		document.querySelector(".btns").innerHTML = '';
 	}
 }
+/* ========================
+서버에 댓글 정보를 전송해서 댓글을 등록하는 함수
+======================== */
+async function sendComment(e){
+	e.preventDefault();
+	
+	//서버에 보낼 정보를 만듬
+	const formData = new FormData(e.target);
+	const data = Object.fromEntries(formData);
+
+	if(data.content.trim().length == 0){
+		alert("댓글을 입력하세요.")
+		return;
+	}
+	
+	try{
+		const urlParams = new URLSearchParams(location.search);
+		const 게시글번호 = urlParams.get("num");
+		//서버에 댓글 등록을 요청
+		//url : /api/posts/게시글번호/comments
+		//method : post
+		const response = await authFetch(`/api/posts/${게시글번호}/comments`, {
+			method : "post",
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			body : JSON.stringify(data)
+		});
+		
+	}catch(e){
+		console.error(e);
+	}
+	
+}
+
+
+
 
 

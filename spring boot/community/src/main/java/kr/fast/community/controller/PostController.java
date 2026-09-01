@@ -14,12 +14,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.fast.community.dto.CommentRequest;
 import kr.fast.community.dto.MessageResponse;
 import kr.fast.community.dto.PageResponse;
 import kr.fast.community.dto.PostRequest;
@@ -72,6 +74,16 @@ public class PostController {
 		}catch (Exception e) {
 			ms = new MessageResponse(false, e.getMessage());
 		}
+		return ResponseEntity.ok(ms);
+	}
+	@PostMapping("/{게시글번호}/comments")
+	public ResponseEntity<Object> commentsPost(
+		@PathVariable("게시글번호") int 게시글번호,
+		@RequestBody CommentRequest request,
+		@AuthenticationPrincipal CustomUserDetails userDetails
+			){
+		MessageResponse ms 
+			= postService.insertComment(게시글번호, request, userDetails);
 		return ResponseEntity.ok(ms);
 	}
 }

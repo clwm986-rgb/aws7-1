@@ -53,10 +53,32 @@
 			<button class="btn btn-outline-danger btn-delete">삭제</button>
 			<button class="btn btn-outline-warning btn-update">수정</button>
 		</div>
+		
+		<hr>
+		<h1>댓글 목록</h1>
+		<div id="comment-box">
+		
+		</div>
+		<hr>
+		<form class="input-group mb-5" onsubmit="sendComment(event)">
+			<textarea class="form-control" name="content"></textarea>
+			<button class="btn btn-success">등록</button>
+		</form>
+		<!-- 
+		댓글을 입력해서 등록 버튼을 클릭하면 비동기 방식으로 서버에 댓글 정보를 전송
+		 -->
 	</div>
-	
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 

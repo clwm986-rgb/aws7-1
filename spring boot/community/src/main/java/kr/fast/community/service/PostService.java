@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.annotation.PostConstruct;
+import kr.fast.community.dto.CommentRequest;
 import kr.fast.community.dto.MessageResponse;
 import kr.fast.community.dto.PageResponse;
 import kr.fast.community.dto.PostRequest;
@@ -126,6 +127,27 @@ public class PostService {
 	public List<File> getFiles(int 게시글번호) {
 		
 		return fileRepository.findAllByPostId(게시글번호);
+	}
+
+	public MessageResponse insertComment(int 게시글번호, CommentRequest request, CustomUserDetails userDetails) {
+		//게시글 존재 확인
+		Post post = postRepository.findById(게시글번호)
+				.orElseThrow(()->new RuntimeException("게시글이 존재하지 않습니다."));
+		
+		if(post == null || post.getIsDeleted().equals("Y") ) {
+			throw new RuntimeException("게시글이 존재하지 않습니다.");
+		}
+		//사용자 확인(로그인 했는지 안했는지)
+		if(userDetails == null || userDetails.getUsername().isEmpty()) {
+			throw new RuntimeException("로그인이 필요한 서비스입니다.");
+		}
+		//댓글 내용 확인
+		if(request == null || request.content() == null || request.content().isBlank()) {
+			throw new RuntimeException("댓글을 입력하세요.");
+		}
+		
+		//댓글 등록
+		return null;
 	}
 	
 }
