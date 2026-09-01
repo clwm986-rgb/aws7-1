@@ -1,27 +1,51 @@
 package kr.fast.community.service;
 
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.annotation.PostConstruct;
 import kr.fast.community.dto.MessageResponse;
 import kr.fast.community.dto.PageResponse;
 import kr.fast.community.dto.PostRequest;
 import kr.fast.community.entity.Board;
+import kr.fast.community.entity.File;
 import kr.fast.community.entity.Post;
 import kr.fast.community.repository.BoardRepository;
+import kr.fast.community.repository.FileRepository;
 import kr.fast.community.repository.MemberRepository;
 import kr.fast.community.repository.PostRepository;
 import kr.fast.community.security.CustomUserDetails;
-import lombok.AllArgsConstructor;
+import kr.fast.community.utils.FileUtils;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PostService {
 
 	private final PostRepository postRepository;
 	private final BoardRepository boardRepository;
 	private final MemberRepository memberRepository;
+	private final FileRepository fileRepository;
+	
+	@Value("${file.path}")
+	private String uploadFilePath;
+	
+	@PostConstruct //의존성 주입 완료 후 실행
+	public void init() {
+		//서버에 업로드할 경로가 없으면 경로를 생성
+		java.io.File dir = new java.io.File(uploadFilePath);
+		//해당 경로가 없으면 
+		if(!dir.exists()) {
+			//해당 경로에 필요한 폴더들을 만듬
+			dir.mkdirs();
+		}
+	}
 
 	public PageResponse<Post> getPosts(String type, String keyword, Pageable pageable) {
 		Page<Post> page;
@@ -53,7 +77,7 @@ public class PostService {
 		return post;
 	}
 
-	public MessageResponse insertPost(PostRequest request, CustomUserDetails userDetails) {
+	public MessageResponse insertPost(PostRequest request, CustomUserDetails userDetails, List<MultipartFile> files) {
 		//로그인 했는지 확인
 		if(userDetails == null) {
 			throw new IllegalArgumentException("로그인이 필요한 서비스입니다.");
@@ -80,7 +104,20 @@ public class PostService {
 		Post post = request.toPost(board, userDetails.getUsername());
 		
 		//게시글 등록
-		postRepository.save(post);
+		Post savedPost = postRepository.save(post);
+		
+		//첨부파일을 등록
+		//1. 첨부파일을 서버에 업로드
+		for(MultipartFile file : files) {
+			String savedName = FileUtils.saveFile(uploadFilePath, file);		
+			String originalName = file.getOriginalFilename();
+
+			//2. 첨부파일을 이용하여 db에 저장
+			//2-1. File 엔티티 객체를 생성
+			File fileEntity = new File(originalName, savedName, savedPost.getId());
+			//2-2. 저장
+			fileRepository.save(fileEntity);
+		}
 		return new MessageResponse(true, "게시글을 동록했습니다.");
 	}
 	

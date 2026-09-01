@@ -12,10 +12,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.fast.community.dto.MessageResponse;
 import kr.fast.community.dto.PageResponse;
@@ -54,12 +55,13 @@ public class PostController {
 	}
 	@PostMapping("")
 	public ResponseEntity<Object> post(
-			@RequestBody PostRequest request, //화면에서 보낸 게시글 정보
+			@RequestPart("post") PostRequest request, //화면에서 보낸 게시글 정보
+			@RequestPart(value="files", required = false) List<MultipartFile> files,
 			@AuthenticationPrincipal CustomUserDetails userDetails //로그인한 회원 정보
 		){
 		MessageResponse ms;
 		try {
-			ms = postService.insertPost(request, userDetails);			
+			ms = postService.insertPost(request, userDetails, files);			
 		}catch (Exception e) {
 			ms = new MessageResponse(false, e.getMessage());
 		}
