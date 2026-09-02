@@ -40,6 +40,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/api/posts")
 @AllArgsConstructor
 public class PostController {
+<<<<<<< HEAD
    
    private final PostService postService;
    
@@ -136,3 +137,100 @@ public class PostController {
       return ResponseEntity.ok(map);
    }
 }
+=======
+	
+	private final PostService postService;
+	
+	@Operation(summary = "게시글 목록 조회", description = "검색어, 타입, 페이지를 이용하여 게시글 목록을 조회")
+	@GetMapping("")
+	public ResponseEntity<Object> get(
+			@Parameter(
+					description = "검색 타입", 
+					schema = @Schema(type = "String", allowableValues = {"all", "title", "writer"}))
+			@RequestParam(required = false, defaultValue = "all", name="type")String type,
+
+			@Parameter(description = "검색어")
+			@RequestParam(required = false, defaultValue = "", name="keyword")String keyword,
+			@Parameter(description = "정렬 방법")
+			@PageableDefault(size=3, sort="id", direction = Sort.Direction.DESC)
+				Pageable pageable){
+		PageResponse<Post> pageResponse = postService.getPosts(type, keyword, pageable);
+		return ResponseEntity.ok(pageResponse);
+	}
+	
+	@GetMapping("/{게시글번호}")
+	public ResponseEntity<Object> idGet(@PathVariable("게시글번호")int 게시글번호){
+		try {
+			//서비스야 게시글 가져와. 번호 여기있어.
+			Post post = postService.getPost(게시글번호);
+			List<File> files = postService.getFiles(게시글번호);
+			Map<String, Object> map = new HashMap<String,Object>();
+			map.put("post", post);
+			map.put("files", files);
+			return ResponseEntity.ok(map);
+		}catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+	}
+	@PostMapping("")
+	public ResponseEntity<Object> post(
+			@RequestPart("post") PostRequest request, //화면에서 보낸 게시글 정보
+			@RequestPart(value="files", required = false) List<MultipartFile> files,
+			@AuthenticationPrincipal CustomUserDetails userDetails //로그인한 회원 정보
+		){
+		MessageResponse ms;
+		try {
+			ms = postService.insertPost(request, userDetails, files);			
+		}catch (Exception e) {
+			ms = new MessageResponse(false, e.getMessage());
+		}
+		return ResponseEntity.ok(ms);
+	}
+	@PostMapping("/{게시글번호}/comments")
+	public ResponseEntity<Object> commentsPost(
+		@PathVariable("게시글번호") int 게시글번호,
+		@RequestBody CommentRequest request,
+		@AuthenticationPrincipal CustomUserDetails userDetails
+			){
+		MessageResponse ms 
+			= postService.insertComment(게시글번호, request, userDetails);
+		return ResponseEntity.ok(ms);
+	}
+	
+	@GetMapping("/{게시글번호}/comments")
+	public ResponseEntity<Object> commentsGet(
+			@PathVariable("게시글번호")int postId,
+			@PageableDefault(size=3, sort="originId", direction = Sort.Direction.DESC)
+			Pageable pageable){
+		//서비스야 댓글 목록 가져와. 게시글 번호와 페이지 정보 줄게
+		//게시글 목록에 페이지 정보도 같이줘.
+		PageResponse<Comment> pageResponse = postService.getComments(postId, pageable);
+		return ResponseEntity.ok(pageResponse);
+	}
+	
+	@PostMapping("/{게시글번호}/likes")
+	public ResponseEntity<Object> likesGet(
+			@PathVariable("게시글번호")int postId,
+			@AuthenticationPrincipal CustomUserDetails details,
+			@RequestBody LikeRequest request){
+		MessageResponse ms;
+		Map<String, Object> map = new HashMap<String,Object>();
+		try {
+			int state = postService.like(postId, details, request);
+			String msg;
+			switch (state) {
+			case 1: msg = "좋아요를 눌렀습니다."; break;
+			case -1: msg = "싫어요를 눌렀습니다."; break;
+			default:
+				msg = request.state() == 1 ? "좋아요를 취소했습니다." : "싫어요를 취소했습니다.";
+			}
+			map.put("state", state);
+			ms = new MessageResponse(true, msg);
+		}catch (Exception e) {
+			ms = new MessageResponse(false, e.getMessage());
+		}
+		map.put("ms", ms);
+		return ResponseEntity.ok(map);
+	}
+}
+>>>>>>> 25b148e114ce9a6429b0efced042fba573d7c453

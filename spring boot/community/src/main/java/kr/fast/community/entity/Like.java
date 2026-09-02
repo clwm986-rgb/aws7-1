@@ -18,6 +18,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class Like {
+<<<<<<< HEAD
    
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)//DB에서 AUTO_INCREMENT로 기본키 생성
@@ -41,4 +42,29 @@ public class Like {
    public void updateState(int state) {
       this.state = state;      
    }
+=======
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)//DB에서 AUTO_INCREMENT로 기본키 생성
+	int id;
+	
+	int state; 
+	
+	@Column(name = "member_id")
+	String memberId;
+	
+	@Column(name = "post_id")
+	int postId;
+	
+	public Like(int postId, String memberId, Integer state) {
+		this.postId = postId;
+		this.memberId = memberId;
+		this.state = state;
+	}
+
+	public void updateState(int state) {
+		this.state = state;
+	}
+
+>>>>>>> 25b148e114ce9a6429b0efced042fba573d7c453
 }
