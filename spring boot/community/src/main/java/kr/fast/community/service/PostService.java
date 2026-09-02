@@ -198,15 +198,21 @@ public class PostService {
 		if(like == null) {
 			Like newLike = new Like(postId, details.getUsername(), request.state());
 			likeRepository.save(newLike);
+			//게시글의 추천/비추천수 업데이트
+			postRepository.updateLikeAndDislikeCount(postId);
 			return request.state();
 		}
 		//기존 추천과 현재 추천이 같음 ==> 취소
 		if(like.getState() == request.state()) {
 			like.updateState(0);
+			//게시글의 추천/비추천수 업데이트
+			postRepository.updateLikeAndDislikeCount(postId);
 			return 0;
 		}
 		else {
 			like.updateState(request.state());
+			//게시글의 추천/비추천수 업데이트
+			postRepository.updateLikeAndDislikeCount(postId);
 			return request.state();
 		}
 	}
