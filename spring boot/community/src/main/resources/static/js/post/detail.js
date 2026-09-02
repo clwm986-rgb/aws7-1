@@ -144,7 +144,28 @@ async function getComments(){
 	
 }
 function displayComments(comments){
-	console.log("댓글 출력 중입니다.");
+	let html = '';
+	comments.forEach(댓글=>{
+		if(댓글.id == 댓글.originId){
+			html += `<li class="list-group-item p-3">`;
+		}else{
+			html += `<li class="list-group-item p-3 ms-4 bg-light border-start border-3 border-primary">`
+		}
+		html += `
+			
+			  <div class="d-flex justify-content-between align-items-center mb-1">
+			    <span class="fw-bold">${댓글.memberId}</span>
+			    <small class="text-muted">${댓글.createdAt.replace("T", " ")}</small>
+			  </div>
+			  <p class="mb-0 text-secondary">
+			    ${댓글.content}
+			  </p>
+			</li>
+		`;
+	})
+	const 댓글목록 = document.querySelector("#comment-box");
+	댓글목록.innerHTML = html;
+	
 }
 
 
