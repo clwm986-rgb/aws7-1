@@ -39,7 +39,7 @@ public class PostService {
 	
 	@Value("${file.path}")
 	private String uploadFilePath;
-	
+
 	@PostConstruct //의존성 주입 완료 후 실행
 	public void init() {
 		//서버에 업로드할 경로가 없으면 경로를 생성
@@ -138,15 +138,15 @@ public class PostService {
 				.orElseThrow(()->new RuntimeException("게시글이 존재하지 않습니다."));
 		
 		if(post == null || post.getIsDeleted().equals("Y") ) {
-			throw new RuntimeException("게시글이 존재하지 않습니다.");
+			return new MessageResponse(false, "게시글이 존재하지 않습니다.");
 		}
 		//사용자 확인(로그인 했는지 안했는지)
 		if(userDetails == null || userDetails.getUsername().isEmpty()) {
-			throw new RuntimeException("로그인이 필요한 서비스입니다.");
+			return new MessageResponse(false, "로그인이 필요한 서비스입니다.");
 		}
 		//댓글 내용 확인
 		if(request == null || request.content() == null || request.content().isBlank()) {
-			throw new RuntimeException("댓글을 입력하세요.");
+			return new MessageResponse(false, "댓글을 입력하세요.");
 		}
 		
 		//댓글 등록

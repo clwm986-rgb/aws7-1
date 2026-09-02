@@ -108,6 +108,15 @@ async function sendComment(e){
 			body : JSON.stringify(data)
 		});
 		
+		const result = await response.json();
+		alert(result.message);
+		if(result.success){
+			//댓글 목록 새로고침
+			
+			//댓글 입력창 비우기 
+			const 댓글입력창 = e.target.querySelector("textarea");
+			댓글입력창.value = "";
+		}
 	}catch(e){
 		console.error(e);
 	}
