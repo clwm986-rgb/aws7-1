@@ -3,6 +3,7 @@ DOM 트리 구성이 완료되면 실행
 ======================== */ 
 document.addEventListener("DOMContentLoaded", e=>{
 	getPost();
+	getComments();
 });
 
 /* ========================
@@ -121,6 +122,29 @@ async function sendComment(e){
 		console.error(e);
 	}
 	
+}
+async function getComments(){
+	
+	//댓글 목록 요청
+	try{
+		const urlParams = new URLSearchParams(location.search);
+		const 게시글번호 = urlParams.get("num");
+		const response = await fetch(`/api/posts/${게시글번호}/comments`);
+		
+		if(!response.ok){
+			return;
+		}
+		const result = await response.json();
+		console.log(result);
+		//댓글 목록 화면에 출력
+		displayComments(result);
+	}catch(e){
+		console.error(e);
+	}
+	
+}
+function displayComments(comments){
+	console.log("댓글 출력 중입니다.");
 }
 
 

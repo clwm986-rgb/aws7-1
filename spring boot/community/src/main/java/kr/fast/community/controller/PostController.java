@@ -25,6 +25,7 @@ import kr.fast.community.dto.CommentRequest;
 import kr.fast.community.dto.MessageResponse;
 import kr.fast.community.dto.PageResponse;
 import kr.fast.community.dto.PostRequest;
+import kr.fast.community.entity.Comment;
 import kr.fast.community.entity.File;
 import kr.fast.community.entity.Post;
 import kr.fast.community.security.CustomUserDetails;
@@ -85,5 +86,16 @@ public class PostController {
 		MessageResponse ms 
 			= postService.insertComment(게시글번호, request, userDetails);
 		return ResponseEntity.ok(ms);
+	}
+	
+	@GetMapping("/{게시글번호}/comments")
+	public ResponseEntity<Object> commentsGet(
+			@PathVariable("게시글번호")int postId
+			){
+		//서비스야 댓글 목록 가져와. 게시글 번호와 페이지 정보 줄게
+		//게시글 목록에 페이지 정보도 같이줘.
+//		PageResponse<Comment> pageResponse = postService.getComments(postId, pageable);
+		List<Comment> list = postService.getComments(postId);
+		return ResponseEntity.ok(list);
 	}
 }
