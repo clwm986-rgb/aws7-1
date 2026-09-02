@@ -21,7 +21,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import kr.fast.community.dto.CommentRequest;
+import kr.fast.community.dto.LikeRequest;
 import kr.fast.community.dto.MessageResponse;
 import kr.fast.community.dto.PageResponse;
 import kr.fast.community.dto.PostRequest;
@@ -39,10 +43,17 @@ public class PostController {
 	
 	private final PostService postService;
 	
+	@Operation(summary = "게시글 목록 조회", description = "검색어, 타입, 페이지를 이용하여 게시글 목록을 조회")
 	@GetMapping("")
 	public ResponseEntity<Object> get(
+			@Parameter(
+					description = "검색 타입", 
+					schema = @Schema(type = "String", allowableValues = {"all", "title", "writer"}))
 			@RequestParam(required = false, defaultValue = "all", name="type")String type,
+
+			@Parameter(description = "검색어")
 			@RequestParam(required = false, defaultValue = "", name="keyword")String keyword,
+			@Parameter(description = "정렬 방법")
 			@PageableDefault(size=3, sort="id", direction = Sort.Direction.DESC)
 				Pageable pageable){
 		PageResponse<Post> pageResponse = postService.getPosts(type, keyword, pageable);
@@ -97,5 +108,28 @@ public class PostController {
 		//게시글 목록에 페이지 정보도 같이줘.
 		PageResponse<Comment> pageResponse = postService.getComments(postId, pageable);
 		return ResponseEntity.ok(pageResponse);
+	}
+	
+	@PostMapping("/{게시글번호}/likes")
+	public ResponseEntity<Object> likesGet(
+			@PathVariable("게시글번호")int postId,
+			@AuthenticationPrincipal CustomUserDetails details,
+			@RequestBody LikeRequest request){
+		MessageResponse ms;
+		try {
+			int state = postService.like(postId, details, request);
+			String msg;
+			switch (state) {
+			case 1: msg = "좋아요를 눌렀습니다."; break;
+			case -1: msg = "싫어요를 눌렀습니다."; break;
+			default:
+				msg = request.state() == 1 ? "좋아요를 취소했습니다." : "싫어요를 취소했습니다.";
+			}
+			ms = new MessageResponse(true, msg);
+		}catch (Exception e) {
+			ms = new MessageResponse(false, e.getMessage());
+		}
+		
+		return ResponseEntity.ok("{}");
 	}
 }

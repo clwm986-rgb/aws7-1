@@ -224,5 +224,31 @@ const data = {
 	page : 0
 }
 
+async function clickLike(state){
+	const urlParams = new URLSearchParams(location.search);
+	const 게시글번호 = urlParams.get("num");
+	//좋아요/싫어요 정보를 전송
+	try{
+		const response = await authFetch(`/api/posts/${게시글번호}/likes`, {
+			method : "post",
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			body : JSON.stringify({state})	
+		});
+		//결과를 알림창으로 띄움
+		const result = await response.json();
+		alert(result.ms.message);
+		if(result.ms.success){
+			//좋아요,싫어요 숫자를 업데이트
+				
+			//좋아요,싫어요 버튼 상태를 업데이트
+		}
+	}catch(e){
+		console.error(e);
+	}
+	
+	
+}
 
 
