@@ -3,6 +3,7 @@ package kr.fast.community.service;
 
 import java.util.List;
 
+import kr.fast.community.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import kr.fast.community.dto.MessageResponse;
 import kr.fast.community.dto.PageResponse;
 import kr.fast.community.dto.PostRequest;
 import kr.fast.community.entity.Board;
+import kr.fast.community.entity.Comment;
 import kr.fast.community.entity.File;
 import kr.fast.community.entity.Post;
 import kr.fast.community.repository.BoardRepository;
@@ -29,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostService {
 
+	private final CommentRepository commentRepository;
 	private final PostRepository postRepository;
 	private final BoardRepository boardRepository;
 	private final MemberRepository memberRepository;
@@ -147,7 +150,17 @@ public class PostService {
 		}
 		
 		//댓글 등록
-		return null;
+		//1. 엔티티 생성
+		Comment comment = 
+				new Comment(
+						request.content(), //댓글 내용
+						post.getId(), //게시글번호
+						userDetails.getUsername(),//작성자
+						null);//대댓여부. null : 댓글, null이 아니면 대댓
+		System.out.println(comment);
+		//2. 저장
+		commentRepository.save(comment);
+		return new MessageResponse(true, "댓글을 등록했습니다.");
 	}
 	
 }

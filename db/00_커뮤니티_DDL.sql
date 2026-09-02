@@ -59,7 +59,7 @@ CREATE TABLE `comment` (
 	`id`             INT           PRIMARY KEY AUTO_INCREMENT NOT NULL, -- AUTO_INCREMENT 추가
 	`content`        VARCHAR(500)  NOT NULL,
 	`created_at`     DATETIME      DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`origin_id`      INT           NOT NULL, -- 대댓글 구현용 원댓글 번호
+	`origin_id`      INT           , -- 대댓글 구현용 원댓글 번호
 	`is_deleted`     CHAR(1)       DEFAULT 'N' NOT NULL,
 	`member_id`      VARCHAR(15)   NOT NULL,
 	`post_id`        INT           NOT NULL

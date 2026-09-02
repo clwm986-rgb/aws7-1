@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +32,7 @@ public class Comment {
 	LocalDateTime createdAt;
 	
 	@Column(name="origin_id")
-	int originId;
+	Integer originId;
 
 	@Column(name="is_deleted")
 	String isDeleted;
@@ -42,4 +43,28 @@ public class Comment {
 	@Column(name="post_id")
 	int postId;
 
+	//대댓인 경우
+	public Comment(String content, int postId, String memberId, Integer originId) {
+		this(content, postId, memberId);
+//		this.content = content;
+//		this.id = id;
+//		this.memberId = memberId;
+		this.originId = originId;
+	}
+	//댓글인 경우
+	public Comment(String content, int postId, String memberId) {
+		this.content = content;
+		this.postId = postId;
+		this.memberId = memberId;
+		this.createdAt = LocalDateTime.now();
+		this.isDeleted = "N";
+	}
+	
+	@PostPersist //저장 후 실행되는 메서드(JPA 콜백)
+	public void initOriginId() {	
+		//댓글인 경우(originId가 null) originId를 id로 수정
+		if(this.originId == null) {
+			this.originId = this.id;
+		}
+	}
 }
