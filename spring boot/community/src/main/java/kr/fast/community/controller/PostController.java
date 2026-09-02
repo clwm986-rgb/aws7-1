@@ -90,12 +90,12 @@ public class PostController {
 	
 	@GetMapping("/{게시글번호}/comments")
 	public ResponseEntity<Object> commentsGet(
-			@PathVariable("게시글번호")int postId
-			){
+			@PathVariable("게시글번호")int postId,
+			@PageableDefault(size=3, sort="originId", direction = Sort.Direction.DESC)
+			Pageable pageable){
 		//서비스야 댓글 목록 가져와. 게시글 번호와 페이지 정보 줄게
 		//게시글 목록에 페이지 정보도 같이줘.
-//		PageResponse<Comment> pageResponse = postService.getComments(postId, pageable);
-		List<Comment> list = postService.getComments(postId);
-		return ResponseEntity.ok(list);
+		PageResponse<Comment> pageResponse = postService.getComments(postId, pageable);
+		return ResponseEntity.ok(pageResponse);
 	}
 }
