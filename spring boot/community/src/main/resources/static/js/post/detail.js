@@ -136,11 +136,11 @@ async function getComments(){
 		}
 		const result = await response.json();
 		
-		const {content, page, startPage, endPage, hasNext, hasPrev} = result;
+		const {content, page, startPage, endPage, hasNext, hasPrev, totalContentSize} = result;
 		//댓글 목록 화면에 출력
 		displayComments(content);
 		//댓글 페이지네이션 처리
-		displayCommentPaging(page, startPage, endPage, hasNext, hasPrev);
+		displayCommentPaging(page, startPage, endPage, hasNext, hasPrev, totalContentSize);
 	}catch(e){
 		console.error(e);
 	}
@@ -170,11 +170,16 @@ function displayComments(comments){
 	댓글목록.innerHTML = html;
 	
 }
-function displayCommentPaging(page, startPage, endPage, hasNext, hasPrev){
+function displayCommentPaging(page, startPage, endPage, hasNext, hasPrev, totalContentSize){
 	
 	const 페이지네이션 = document.querySelector(".pagination");
 			
 	let 페이지네이션코드 = '';
+	
+	if(totalContentSize == 0){
+		페이지네이션.innerHTML = '<li>등록된 댓글이 없습니다.</li>'
+		return;
+	}
 	
 	//이전 페이지
 	if(hasPrev){
