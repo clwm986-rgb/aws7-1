@@ -116,6 +116,7 @@ public class PostController {
 			@AuthenticationPrincipal CustomUserDetails details,
 			@RequestBody LikeRequest request){
 		MessageResponse ms;
+		Map<String, Object> map = new HashMap<String,Object>();
 		try {
 			int state = postService.like(postId, details, request);
 			String msg;
@@ -125,11 +126,12 @@ public class PostController {
 			default:
 				msg = request.state() == 1 ? "좋아요를 취소했습니다." : "싫어요를 취소했습니다.";
 			}
+			map.put("state", state);
 			ms = new MessageResponse(true, msg);
 		}catch (Exception e) {
 			ms = new MessageResponse(false, e.getMessage());
 		}
-		
-		return ResponseEntity.ok("{}");
+		map.put("ms", ms);
+		return ResponseEntity.ok(map);
 	}
 }

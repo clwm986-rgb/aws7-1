@@ -3,24 +3,28 @@ package kr.fast.community.service;
 
 import java.util.List;
 
-import kr.fast.community.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.annotation.PostConstruct;
 import kr.fast.community.dto.CommentRequest;
+import kr.fast.community.dto.LikeRequest;
 import kr.fast.community.dto.MessageResponse;
 import kr.fast.community.dto.PageResponse;
 import kr.fast.community.dto.PostRequest;
 import kr.fast.community.entity.Board;
 import kr.fast.community.entity.Comment;
 import kr.fast.community.entity.File;
+import kr.fast.community.entity.Like;
 import kr.fast.community.entity.Post;
 import kr.fast.community.repository.BoardRepository;
+import kr.fast.community.repository.CommentRepository;
 import kr.fast.community.repository.FileRepository;
+import kr.fast.community.repository.LikeRepository;
 import kr.fast.community.repository.MemberRepository;
 import kr.fast.community.repository.PostRepository;
 import kr.fast.community.security.CustomUserDetails;
@@ -36,6 +40,7 @@ public class PostService {
 	private final BoardRepository boardRepository;
 	private final MemberRepository memberRepository;
 	private final FileRepository fileRepository;
+	private final LikeRepository likeRepository;
 	
 	@Value("${file.path}")
 	private String uploadFilePath;
@@ -50,7 +55,7 @@ public class PostService {
 			dir.mkdirs();
 		}
 	}
-
+	@Transactional
 	public PageResponse<Post> getPosts(String type, String keyword, Pageable pageable) {
 		Page<Post> page;
 		//검색어 없으면 타입에 상관없이 전체 검색
@@ -68,7 +73,7 @@ public class PostService {
 		}
 		return new PageResponse<Post>(page, 3);
 	}
-
+	@Transactional
 	public Post getPost(int 게시글번호) {
 		//레포야 게시글 가져와. 번호 여기있어 => 게시글 없어? 예외 발생해
 		Post post = postRepository.findById(게시글번호)
@@ -80,7 +85,7 @@ public class PostService {
 		//게시글 반환
 		return post;
 	}
-
+	@Transactional
 	public MessageResponse insertPost(PostRequest request, CustomUserDetails userDetails, List<MultipartFile> files) {
 		//로그인 했는지 확인
 		if(userDetails == null) {
@@ -126,12 +131,12 @@ public class PostService {
 		}
 		return new MessageResponse(true, "게시글을 등록했습니다.");
 	}
-
+	@Transactional
 	public List<File> getFiles(int 게시글번호) {
 		
 		return fileRepository.findAllByPostId(게시글번호);
 	}
-
+	@Transactional
 	public MessageResponse insertComment(int 게시글번호, CommentRequest request, CustomUserDetails userDetails) {
 		//게시글 존재 확인
 		Post post = postRepository.findById(게시글번호)
@@ -162,7 +167,7 @@ public class PostService {
 		commentRepository.save(comment);
 		return new MessageResponse(true, "댓글을 등록했습니다.");
 	}
-
+	@Transactional
 	public PageResponse<Comment> getComments(int postId, Pageable pageable) {
 		//게시글이 있는지 확인
 		Post post = postRepository.findByIdAndIsDeleted(postId, "N");
@@ -173,6 +178,37 @@ public class PostService {
 		
 		Page<Comment>page = commentRepository.findAllByPostId(postId, pageable);
 		return new PageResponse<Comment>(page, 3);
+	}
+	@Transactional
+	public int like(int postId, CustomUserDetails details, LikeRequest request) {
+		//게시글이 있는지 확인
+		Post post = postRepository.findByIdAndIsDeleted(postId, "N");
+		
+		if(post == null) {
+			throw new RuntimeException("존재하지 않은 게시글입니다.");
+		}
+		//로그인 확인
+		if(details == null || details.getUsername().isEmpty()) {
+			throw new RuntimeException("로그인이 필요한 서비스입니다.");
+		}
+		//기존 추천 정보를 가져옴
+		Like like = 
+			likeRepository.findByPostIdAndMemberId(postId, details.getUsername());
+		//없으면 추가
+		if(like == null) {
+			Like newLike = new Like(postId, details.getUsername(), request.state());
+			likeRepository.save(newLike);
+			return request.state();
+		}
+		//기존 추천과 현재 추천이 같음 ==> 취소
+		if(like.getState() == request.state()) {
+			like.updateState(0);
+			return 0;
+		}
+		else {
+			like.updateState(request.state());
+			return request.state();
+		}
 	}
 	
 }
