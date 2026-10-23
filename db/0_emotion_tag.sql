@@ -1,0 +1,1 @@
+select * from diary_service.emotion_tag;
